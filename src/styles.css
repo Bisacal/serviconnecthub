@@ -59,6 +59,22 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-deep: var(--brand-deep);
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-deep: var(--terracotta-deep);
+  --color-amber: var(--amber);
+  --color-accent-green: var(--accent-green);
+  --color-cream: var(--cream);
+  --color-sand: var(--sand);
+  --color-sand-deep: var(--sand-deep);
+  --color-ink: var(--ink);
+  --color-muted-warm: var(--muted-warm);
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --shadow-soft: 0 24px 60px -32px var(--shadow-color);
+  --shadow-lift: 0 16px 30px -20px var(--shadow-color);
 }
 
 :root {
@@ -95,6 +111,19 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+  --brand: oklch(0.27 0.045 196);
+  --brand-soft: oklch(0.36 0.045 196);
+  --brand-deep: oklch(0.21 0.04 196);
+  --terracotta: oklch(0.59 0.14 43);
+  --terracotta-deep: oklch(0.51 0.14 39);
+  --amber: oklch(0.74 0.14 78);
+  --accent-green: oklch(0.55 0.1 132);
+  --cream: oklch(0.97 0.018 80);
+  --sand: oklch(0.92 0.045 78);
+  --sand-deep: oklch(0.86 0.065 76);
+  --ink: oklch(0.28 0.03 55);
+  --muted-warm: oklch(0.58 0.045 65);
+  --shadow-color: oklch(0.28 0.03 55 / 22%);
 }
 
 .dark {
@@ -138,7 +167,40 @@
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  ::selection {
+    background-color: var(--color-sand-deep);
+    color: var(--color-brand-deep);
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility text-pretty {
+  text-wrap: pretty;
+}
+
+@utility page-shell {
+  width: min(100% - 2.5rem, 1180px);
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .page-shell {
+    width: min(100% - 5rem, 1180px);
   }
 }
