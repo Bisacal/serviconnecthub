@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AdminDashboardRouteImport } from './routes/admin-dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -20,10 +19,11 @@ import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as ProviderDashboardRouteImport } from './routes/provider-dashboard'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin-dashboard'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedProviderDashboardRouteImport } from './routes/_authenticated/provider-dashboard'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ProvidersIdRouteImport } from './routes/providers.$id'
 
@@ -39,11 +39,6 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/admin-dashboard',
-  path: '/admin-dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -81,11 +76,6 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
   path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProviderDashboardRoute = ProviderDashboardRouteImport.update({
-  id: '/provider-dashboard',
-  path: '/provider-dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -96,11 +86,23 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminDashboardRoute =
+  AuthenticatedAdminDashboardRouteImport.update({
+    id: '/admin-dashboard',
+    path: '/admin-dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProviderDashboardRoute =
+  AuthenticatedProviderDashboardRouteImport.update({
+    id: '/provider-dashboard',
+    path: '/provider-dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -115,7 +117,6 @@ const ProvidersIdRoute = ProvidersIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin-dashboard': typeof AdminDashboardRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
@@ -123,17 +124,17 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/provider-dashboard': typeof ProviderDashboardRoute
   '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin-dashboard': typeof AdminDashboardRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
@@ -141,10 +142,11 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/provider-dashboard': typeof ProviderDashboardRoute
   '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
 }
@@ -153,7 +155,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/admin-dashboard': typeof AdminDashboardRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
@@ -161,10 +162,11 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/provider-dashboard': typeof ProviderDashboardRoute
   '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/_authenticated/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
 }
@@ -173,7 +175,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/admin-dashboard'
     | '/auth'
     | '/blog'
     | '/contact'
@@ -181,17 +182,17 @@ export interface FileRouteTypes {
     | '/faq'
     | '/forgot-password'
     | '/how-it-works'
-    | '/provider-dashboard'
     | '/reset-password'
     | '/services'
+    | '/admin-dashboard'
     | '/dashboard'
+    | '/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/admin-dashboard'
     | '/auth'
     | '/blog'
     | '/contact'
@@ -199,10 +200,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/forgot-password'
     | '/how-it-works'
-    | '/provider-dashboard'
     | '/reset-password'
     | '/services'
+    | '/admin-dashboard'
     | '/dashboard'
+    | '/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
   id:
@@ -210,7 +212,6 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/about'
-    | '/admin-dashboard'
     | '/auth'
     | '/blog'
     | '/contact'
@@ -218,10 +219,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/forgot-password'
     | '/how-it-works'
-    | '/provider-dashboard'
     | '/reset-password'
     | '/services'
+    | '/_authenticated/admin-dashboard'
     | '/_authenticated/dashboard'
+    | '/_authenticated/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
   fileRoutesById: FileRoutesById
@@ -230,7 +232,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
-  AdminDashboardRoute: typeof AdminDashboardRoute
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
@@ -238,7 +239,6 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HowItWorksRoute: typeof HowItWorksRoute
-  ProviderDashboardRoute: typeof ProviderDashboardRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ServicesRoute: typeof ServicesRoute
   ProvidersIdRoute: typeof ProvidersIdRoute
@@ -265,13 +265,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin-dashboard': {
-      id: '/admin-dashboard'
-      path: '/admin-dashboard'
-      fullPath: '/admin-dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -323,13 +316,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/provider-dashboard': {
-      id: '/provider-dashboard'
-      path: '/provider-dashboard'
-      fullPath: '/provider-dashboard'
-      preLoaderRoute: typeof ProviderDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -344,11 +330,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin-dashboard': {
+      id: '/_authenticated/admin-dashboard'
+      path: '/admin-dashboard'
+      fullPath: '/admin-dashboard'
+      preLoaderRoute: typeof AuthenticatedAdminDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/provider-dashboard': {
+      id: '/_authenticated/provider-dashboard'
+      path: '/provider-dashboard'
+      fullPath: '/provider-dashboard'
+      preLoaderRoute: typeof AuthenticatedProviderDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/blog/$slug': {
@@ -369,11 +369,15 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedProviderDashboardRoute: typeof AuthenticatedProviderDashboardRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedProviderDashboardRoute: AuthenticatedProviderDashboardRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -393,7 +397,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
-  AdminDashboardRoute: AdminDashboardRoute,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
@@ -401,7 +404,6 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HowItWorksRoute: HowItWorksRoute,
-  ProviderDashboardRoute: ProviderDashboardRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ServicesRoute: ServicesRoute,
   ProvidersIdRoute: ProvidersIdRoute,
