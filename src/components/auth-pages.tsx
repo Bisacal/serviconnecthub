@@ -13,15 +13,15 @@ type Role = "client" | "provider";
 export function AuthPage() {
   const navigate = useNavigate();
   const search = useSearch({ from: "/auth" });
-  const [mode, setMode] = useState<"login" | "signup">(search.mode === "signup" ? "signup" : "login");
-  const [role, setRole] = useState<Role>(search.role === "provider" ? "provider" : "client");
+  const [mode, setMode] = useState<"login" | "signup">(search["mode"] === "signup" ? "signup" : "login");
+  const [role, setRole] = useState<Role>(search["role"] === "provider" ? "provider" : "client");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => { setMode(search.mode === "signup" ? "signup" : "login"); if (search.role === "provider") setRole("provider"); }, [search.mode, search.role]);
+  useEffect(() => { setMode(search["mode"] === "signup" ? "signup" : "login"); if (search["role"] === "provider") setRole("provider"); }, [search["mode"], search["role"]]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
