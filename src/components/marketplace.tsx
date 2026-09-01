@@ -91,7 +91,7 @@ export function PublicHeader() {
         <Link to="/about" activeProps={{ className: "text-brand" }} className="transition-colors hover:text-brand">About</Link>
       </nav>
       <div className="hidden items-center gap-3 sm:flex">
-        {user ? <Button asChild variant="brand" className="rounded-full"><Link to="/dashboard"><UserRound />Dashboard</Link></Button> : <><Button asChild variant="ghost" className="rounded-full text-brand"><Link to="/auth">Sign in</Link></Button><Button asChild variant="brand" className="rounded-full"><Link to="/auth" search={{ mode: "signup", role: "client" }}>Join SERVICONNECT</Link></Button></>}
+        {user ? <Button asChild variant="brand" className="rounded-full"><Link to="/dashboard"><UserRound />Dashboard</Link></Button> : <><Button asChild variant="ghost" className="rounded-full text-brand"><Link to="/auth" search={{ mode: "login", role: "client" }}>Sign in</Link></Button><Button asChild variant="brand" className="rounded-full"><Link to="/auth" search={{ mode: "signup", role: "client" }}>Join SERVICONNECT</Link></Button></>}
       </div>
       <Button variant="ghost" size="icon" className="text-brand sm:hidden" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen((value) => !value)}>{open ? <X /> : <Menu />}</Button>
     </div>
