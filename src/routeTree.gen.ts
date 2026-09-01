@@ -10,12 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminDashboardRouteImport } from './routes/admin-dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -23,12 +23,17 @@ import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as ProviderDashboardRouteImport } from './routes/provider-dashboard'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ProvidersIdRouteImport } from './routes/providers.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -54,11 +59,6 @@ const BlogRoute = BlogRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DirectoryRoute = DirectoryRouteImport.update({
@@ -96,6 +96,11 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -114,7 +119,6 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/directory': typeof DirectoryRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -122,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/provider-dashboard': typeof ProviderDashboardRoute
   '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
 }
@@ -132,7 +137,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/directory': typeof DirectoryRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -140,18 +144,19 @@ export interface FileRoutesByTo {
   '/provider-dashboard': typeof ProviderDashboardRoute
   '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/admin-dashboard': typeof AdminDashboardRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/directory': typeof DirectoryRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -159,6 +164,7 @@ export interface FileRoutesById {
   '/provider-dashboard': typeof ProviderDashboardRoute
   '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
 }
@@ -171,7 +177,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/contact'
-    | '/dashboard'
     | '/directory'
     | '/faq'
     | '/forgot-password'
@@ -179,6 +184,7 @@ export interface FileRouteTypes {
     | '/provider-dashboard'
     | '/reset-password'
     | '/services'
+    | '/dashboard'
     | '/blog/$slug'
     | '/providers/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -189,7 +195,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/contact'
-    | '/dashboard'
     | '/directory'
     | '/faq'
     | '/forgot-password'
@@ -197,17 +202,18 @@ export interface FileRouteTypes {
     | '/provider-dashboard'
     | '/reset-password'
     | '/services'
+    | '/dashboard'
     | '/blog/$slug'
     | '/providers/$id'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
     | '/admin-dashboard'
     | '/auth'
     | '/blog'
     | '/contact'
-    | '/dashboard'
     | '/directory'
     | '/faq'
     | '/forgot-password'
@@ -215,18 +221,19 @@ export interface FileRouteTypes {
     | '/provider-dashboard'
     | '/reset-password'
     | '/services'
+    | '/_authenticated/dashboard'
     | '/blog/$slug'
     | '/providers/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
-  DashboardRoute: typeof DashboardRoute
   DirectoryRoute: typeof DirectoryRoute
   FaqRoute: typeof FaqRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
@@ -244,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -279,13 +293,6 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/directory': {
@@ -337,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/$slug'
@@ -354,6 +368,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
 }
@@ -366,12 +391,12 @@ const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
-  DashboardRoute: DashboardRoute,
   DirectoryRoute: DirectoryRoute,
   FaqRoute: FaqRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
