@@ -31,7 +31,7 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 
 export function PublicHeader() {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, dashboardPath } = useAuth();
   return <header className="border-b border-sand-deep/70 bg-cream/95 backdrop-blur-sm">
     <div className="page-shell flex min-h-[76px] items-center justify-between gap-6">
       <Logo />
@@ -42,11 +42,11 @@ export function PublicHeader() {
         <Link to="/about" activeProps={{ className: "text-brand" }} className="transition-colors hover:text-brand">About</Link>
       </nav>
       <div className="hidden items-center gap-3 sm:flex">
-        {user ? <Button asChild variant="brand" className="rounded-full"><Link to="/dashboard"><UserRound />Dashboard</Link></Button> : <><Button asChild variant="ghost" className="rounded-full text-brand"><Link to="/auth" search={{ mode: "login", role: "client" }}>Sign in</Link></Button><Button asChild variant="brand" className="rounded-full"><Link to="/auth" search={{ mode: "signup", role: "client" }}>Join SERVICONNECT</Link></Button></>}
+         {user ? <Button asChild variant="brand" className="rounded-full"><Link to={dashboardPath}><UserRound />Dashboard</Link></Button> : <><Button asChild variant="ghost" className="rounded-full text-brand"><Link to="/auth" search={{ mode: "login", role: "client" }}>Sign in</Link></Button><Button asChild variant="brand" className="rounded-full"><Link to="/auth" search={{ mode: "signup", role: "client" }}>Join SERVICONNECT</Link></Button></>}
       </div>
       <Button variant="ghost" size="icon" className="text-brand sm:hidden" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen((value) => !value)}>{open ? <X /> : <Menu />}</Button>
     </div>
-    {open && <div className="border-t border-sand-deep/70 px-5 py-4 sm:hidden"><nav className="page-shell flex flex-col gap-4 text-sm font-medium text-muted-warm"><Link to="/services" onClick={() => setOpen(false)}>Services</Link><Link to="/directory" search={{ service: "", location: "Abuja, FCT" }} onClick={() => setOpen(false)}>Find a pro</Link><Link to="/how-it-works" onClick={() => setOpen(false)}>How it works</Link><Link to="/about" onClick={() => setOpen(false)}>About</Link>{user ? <Link to="/dashboard" onClick={() => setOpen(false)} className="text-terracotta-deep">Go to dashboard</Link> : <Link to="/auth" search={{ mode: "login", role: "client" }} onClick={() => setOpen(false)} className="text-terracotta-deep">Sign in or join</Link>}</nav></div>}
+     {open && <div className="border-t border-sand-deep/70 px-5 py-4 sm:hidden"><nav className="page-shell flex flex-col gap-4 text-sm font-medium text-muted-warm"><Link to="/services" onClick={() => setOpen(false)}>Services</Link><Link to="/directory" search={{ service: "", location: "Abuja, FCT" }} onClick={() => setOpen(false)}>Find a pro</Link><Link to="/how-it-works" onClick={() => setOpen(false)}>How it works</Link><Link to="/about" onClick={() => setOpen(false)}>About</Link>{user ? <Link to={dashboardPath} onClick={() => setOpen(false)} className="text-terracotta-deep">Go to dashboard</Link> : <Link to="/auth" search={{ mode: "login", role: "client" }} onClick={() => setOpen(false)} className="text-terracotta-deep">Sign in or join</Link>}</nav></div>}
   </header>;
 }
 

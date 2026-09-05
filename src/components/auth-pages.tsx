@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { PublicFooter, PublicHeader } from "@/components/marketplace";
+import { createSignupRecords, getDashboardPath, getPrimaryRole, getUserRoles } from "@/lib/auth-roles";
 
 type Role = "client" | "provider";
 
@@ -31,14 +32,14 @@ export function AuthPage() {
         const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { display_name: name, requested_role: role } } });
         if (error) throw error;
         if (data.user && data.session) {
-          await supabase.from("profiles").upsert({ user_id: data.user.id, display_name: name });
-          await supabase.from("user_roles").upsert({ user_id: data.user.id, role });
-          await navigate({ to: "/dashboard" });
+          await createSignupRecords(data.user.id, name, role);
+          await navigate({ to: getDashboardPath(role) });
         } else toast.success("Check your email to confirm your account.");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        await navigate({ to: "/dashboard" });
+        const role = getPrimaryRole(await getUserRoles(data.user.id));
+        await navigate({ to: getDashboardPath(role) });
       }
     } catch (error) { toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again."); } finally { setLoading(false); }
   }
