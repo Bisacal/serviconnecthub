@@ -4,75 +4,26 @@ import {
   ArrowRight,
   Award,
   Bell,
-  BookOpen,
-  Camera,
   Check,
   ChevronDown,
   ChevronRight,
   CircleHelp,
   Clock3,
-  Droplets,
-  Hammer,
-  Laptop,
   MapPin,
   Menu,
   MessageCircle,
-  Paintbrush,
-  PartyPopper,
   Search,
-  Scissors,
   ShieldCheck,
   Sparkles,
   Star,
-  Sun,
   UserRound,
-  Wrench,
   X,
-  Zap,
 } from "lucide-react";
 
 import heroImage from "@/assets/serviconnect-hero.jpg";
-import bolaImage from "@/assets/provider-bola.jpg";
-import emekaImage from "@/assets/provider-emeka.jpg";
-import tundeImage from "@/assets/provider-tunde.jpg";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth-provider";
-
-type Provider = {
-  id: string;
-  name: string;
-  profession: string;
-  location: string;
-  rating: string;
-  reviews: number;
-  price: string;
-  image: string;
-  verified?: boolean;
-  experience: string;
-  availability: string;
-};
-
-const providers: Provider[] = [
-  { id: "bola-okafor", name: "Bola Okafor", profession: "Solar installer", location: "Gwagwalada, Abuja", rating: "4.9", reviews: 212, price: "₦15,000", image: bolaImage, verified: true, experience: "8 years", availability: "Available today" },
-  { id: "emeka-nwosu", name: "Emeka Nwosu", profession: "Auto mechanic", location: "Rukuba, Abuja", rating: "4.8", reviews: 146, price: "₦8,000", image: emekaImage, verified: true, experience: "11 years", availability: "Available tomorrow" },
-  { id: "tunde-alaba", name: "Tunde Alaba", profession: "Plumber", location: "Jabi, Abuja", rating: "4.7", reviews: 94, price: "₦6,000", image: tundeImage, experience: "6 years", availability: "Available today" },
-  { id: "amina-yusuf", name: "Amina Yusuf", profession: "Home tutor · Maths", location: "Gwarinpa, Abuja", rating: "5.0", reviews: 168, price: "₦8,500/hr", image: bolaImage, verified: true, experience: "9 years", availability: "Weekday evenings" },
-];
-
-const categories = [
-  { name: "Education & Tutoring", slug: "education-tutoring", icon: BookOpen, note: "Tutors for every stage" },
-  { name: "Automotive Services", slug: "automotive-services", icon: Wrench, note: "Keep moving with confidence" },
-  { name: "Solar & Energy", slug: "solar-energy", icon: Sun, note: "Power for your home" },
-  { name: "Electrical Services", slug: "electrical-services", icon: Zap, note: "Safe, reliable repairs" },
-  { name: "Plumbing", slug: "plumbing", icon: Droplets, note: "Fix leaks and flow" },
-  { name: "Painting", slug: "painting", icon: Paintbrush, note: "Refresh your space" },
-  { name: "Cleaning", slug: "cleaning", icon: Sparkles, note: "A better kind of clean" },
-  { name: "Carpentry", slug: "carpentry", icon: Hammer, note: "Made to fit your life" },
-  { name: "Technology Services", slug: "technology-services", icon: Laptop, note: "Tech support, sorted" },
-  { name: "Creative Services", slug: "creative-services", icon: Camera, note: "Bring ideas to life" },
-  { name: "Fashion & Beauty", slug: "fashion-beauty", icon: Scissors, note: "Style your way" },
-  { name: "Events & Catering", slug: "events-catering", icon: PartyPopper, note: "Make it a moment" },
-];
+import { blogPosts, categories, providers, type Provider } from "@/lib/marketplace-data";
 
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return <Link to="/" className="flex items-center gap-2" aria-label="SERVICONNECT home"><span className="grid size-10 place-items-center rounded-full bg-terracotta font-display text-lg font-semibold leading-none text-primary-foreground">S</span><span><span className={`block font-display text-[20px] font-semibold tracking-tight ${inverse ? "text-primary-foreground" : "text-brand"}`}>Serviconnect</span><span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-terracotta-deep">Trusted pros</span></span></Link>;
@@ -136,7 +87,7 @@ export function ContactPage() { return <PublicLayout><main className="page-shell
 
 export function FaqPage() { const faqs = [["How does SERVICONNECT work?", "Search by service and location, compare professionals, then choose the person who feels right for the job."], ["Are providers verified?", "Profiles can show verification status, ratings, experience and availability. Verification is being rolled out in phases."], ["Where is SERVICONNECT available?", "Phase 1 starts in Abuja and surrounding areas, with the architecture ready to expand across Nigeria."], ["Can I join as a provider?", "Yes. Create an account, choose Service Provider and set up your professional profile."], ["Are bookings and payments live?", "Not yet. Phase 1 focuses on the trusted directory foundation; bookings, messaging and payments follow in later phases."]]; return <PublicLayout><main className="page-shell max-w-4xl py-12 md:py-20"><p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-deep">Questions, answered</p><h1 className="mt-4 font-display text-5xl font-semibold text-brand md:text-7xl">Everything you need to know.</h1><div className="mt-10 divide-y divide-sand-deep rounded-3xl bg-primary-foreground px-6 ring-1 ring-sand-deep/70">{faqs.map(([question, answer]) => <details key={question} className="group py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 font-display text-xl font-semibold text-brand"><span>{question}</span><ChevronDown className="size-5 shrink-0 text-terracotta transition-transform group-open:rotate-180" /></summary><p className="max-w-2xl pt-3 text-sm leading-7 text-muted-warm">{answer}</p></details>)}</div></main></PublicLayout>; }
 
-export function BlogPage() { const posts = [{ title: "How to choose a reliable professional for your home", category: "Getting started", date: "May 12, 2026" }, { title: "What a verified provider profile should tell you", category: "Trust & safety", date: "May 05, 2026" }, { title: "The Abuja neighbourhood guide to getting things done", category: "Local guide", date: "Apr 28, 2026" }]; return <PublicLayout><main className="page-shell py-12 md:py-20"><p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-deep">The SERVICONNECT journal</p><h1 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-[1.03] text-brand md:text-7xl">Useful ideas for getting things done.</h1><div className="mt-12 grid gap-4 md:grid-cols-3">{posts.map((post, index) => <Link to="/blog/$slug" params={{ slug: `article-${index + 1}` }} key={post.title} className="group rounded-3xl bg-primary-foreground p-6 ring-1 ring-sand-deep transition-all hover:-translate-y-1 hover:shadow-lift"><span className="text-xs font-bold uppercase tracking-[0.15em] text-amber">{post.category}</span><h2 className="mt-14 font-display text-2xl font-semibold leading-tight text-brand">{post.title}</h2><p className="mt-5 text-xs text-muted-warm">{post.date} <ArrowRight className="ml-1 inline size-3 transition-transform group-hover:translate-x-1" /></p></Link>)}</div></main></PublicLayout>; }
+export function BlogPage() { return <PublicLayout><main className="page-shell py-12 md:py-20"><p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-deep">The SERVICONNECT journal</p><h1 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-[1.03] text-brand md:text-7xl">Useful ideas for getting things done.</h1><div className="mt-12 grid gap-4 md:grid-cols-3">{blogPosts.map((post, index) => <Link to="/blog/$slug" params={{ slug: `article-${index + 1}` }} key={post.title} className="group rounded-3xl bg-primary-foreground p-6 ring-1 ring-sand-deep transition-all hover:-translate-y-1 hover:shadow-lift"><span className="text-xs font-bold uppercase tracking-[0.15em] text-amber">{post.category}</span><h2 className="mt-14 font-display text-2xl font-semibold leading-tight text-brand">{post.title}</h2><p className="mt-5 text-xs text-muted-warm">{post.date} <ArrowRight className="ml-1 inline size-3 transition-transform group-hover:translate-x-1" /></p></Link>)}</div></main></PublicLayout>; }
 
 export function BlogArticlePage({ slug }: { slug: string }) { const title = slug === "article-2" ? "What a verified provider profile should tell you" : slug === "article-3" ? "The Abuja neighbourhood guide to getting things done" : "How to choose a reliable professional for your home"; return <PublicLayout><main className="page-shell max-w-3xl py-12 md:py-20"><Link to="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-terracotta-deep"><ArrowRight className="size-4 rotate-180" />Back to journal</Link><p className="mt-10 text-xs font-bold uppercase tracking-[0.18em] text-amber">SERVICONNECT journal · May 12, 2026</p><h1 className="mt-4 font-display text-5xl font-semibold leading-[1.03] text-brand md:text-7xl">{title}</h1><div className="prose prose-lg mt-10 max-w-none text-muted-warm"><p>Finding the right person for a job starts with better information. A useful profile should make it easy to understand what someone does, where they work, how much experience they bring and what other clients thought of the experience.</p><p>That is why SERVICONNECT puts service, location, availability, ratings and verification signals in one calm, comparable place. The aim is not to add noise — it is to make a good decision feel more natural.</p><h2 className="font-display text-3xl font-semibold text-brand">Start with the details that matter</h2><p>Look for a clear description of the service, a realistic starting price and a location that works for you. Then use ratings and reviews as context, not as the only answer.</p></div><div className="mt-12 rounded-3xl bg-sand p-6"><p className="font-display text-2xl font-semibold text-brand">Ready to find your pro?</p><Button asChild variant="terracotta" className="mt-4 rounded-full"><Link to="/directory" search={{ service: "", location: "Abuja, FCT" }}>Browse the directory <ArrowRight /></Link></Button></div></main></PublicLayout>; }
 
