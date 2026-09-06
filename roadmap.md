@@ -1,0 +1,3 @@
+- [ ] Complete public page coverage with explicit categories and search-results routes
+- [ ] Connect search, category, directory, profile, contact, and blog interactions
+- [ ] Verify responsive navigation, routes, and build health
