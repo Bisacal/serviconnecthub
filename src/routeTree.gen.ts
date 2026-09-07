@@ -20,6 +20,8 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SearchResultsRouteImport } from './routes/search-results'
+import { Route as ServiceCategoriesRouteImport } from './routes/service-categories'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin-dashboard'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -81,6 +83,16 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SearchResultsRoute = SearchResultsRouteImport.update({
+  id: '/search-results',
+  path: '/search-results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiceCategoriesRoute = ServiceCategoriesRouteImport.update({
+  id: '/service-categories',
+  path: '/service-categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
@@ -125,6 +137,8 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search-results': typeof SearchResultsRoute
+  '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
   '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -143,6 +157,8 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search-results': typeof SearchResultsRoute
+  '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
   '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -163,6 +179,8 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search-results': typeof SearchResultsRoute
+  '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
   '/_authenticated/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -183,6 +201,8 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/how-it-works'
     | '/reset-password'
+    | '/search-results'
+    | '/service-categories'
     | '/services'
     | '/admin-dashboard'
     | '/dashboard'
@@ -201,6 +221,8 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/how-it-works'
     | '/reset-password'
+    | '/search-results'
+    | '/service-categories'
     | '/services'
     | '/admin-dashboard'
     | '/dashboard'
@@ -220,6 +242,8 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/how-it-works'
     | '/reset-password'
+    | '/search-results'
+    | '/service-categories'
     | '/services'
     | '/_authenticated/admin-dashboard'
     | '/_authenticated/dashboard'
@@ -240,6 +264,8 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HowItWorksRoute: typeof HowItWorksRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SearchResultsRoute: typeof SearchResultsRoute
+  ServiceCategoriesRoute: typeof ServiceCategoriesRoute
   ServicesRoute: typeof ServicesRoute
   ProvidersIdRoute: typeof ProvidersIdRoute
 }
@@ -321,6 +347,20 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search-results': {
+      id: '/search-results'
+      path: '/search-results'
+      fullPath: '/search-results'
+      preLoaderRoute: typeof SearchResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/service-categories': {
+      id: '/service-categories'
+      path: '/service-categories'
+      fullPath: '/service-categories'
+      preLoaderRoute: typeof ServiceCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services': {
@@ -405,6 +445,8 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   HowItWorksRoute: HowItWorksRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SearchResultsRoute: SearchResultsRoute,
+  ServiceCategoriesRoute: ServiceCategoriesRoute,
   ServicesRoute: ServicesRoute,
   ProvidersIdRoute: ProvidersIdRoute,
 }
