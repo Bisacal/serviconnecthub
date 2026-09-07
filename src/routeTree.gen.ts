@@ -20,10 +20,13 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SearchResultsRouteImport } from './routes/search-results'
+import { Route as ServiceCategoriesRouteImport } from './routes/service-categories'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin-dashboard'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProviderDashboardRouteImport } from './routes/_authenticated/provider-dashboard'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ProvidersIdRouteImport } from './routes/providers.$id'
 
@@ -81,6 +84,16 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SearchResultsRoute = SearchResultsRouteImport.update({
+  id: '/search-results',
+  path: '/search-results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiceCategoriesRoute = ServiceCategoriesRouteImport.update({
+  id: '/service-categories',
+  path: '/service-categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
@@ -103,6 +116,11 @@ const AuthenticatedProviderDashboardRoute =
     path: '/provider-dashboard',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -125,30 +143,35 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search-results': typeof SearchResultsRoute
+  '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
   '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
+  '/blog/': typeof BlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/directory': typeof DirectoryRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search-results': typeof SearchResultsRoute
+  '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
   '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
+  '/blog': typeof BlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -163,12 +186,15 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search-results': typeof SearchResultsRoute
+  '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
   '/_authenticated/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
+  '/blog/': typeof BlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -183,30 +209,35 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/how-it-works'
     | '/reset-password'
+    | '/search-results'
+    | '/service-categories'
     | '/services'
     | '/admin-dashboard'
     | '/dashboard'
     | '/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/auth'
-    | '/blog'
     | '/contact'
     | '/directory'
     | '/faq'
     | '/forgot-password'
     | '/how-it-works'
     | '/reset-password'
+    | '/search-results'
+    | '/service-categories'
     | '/services'
     | '/admin-dashboard'
     | '/dashboard'
     | '/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
+    | '/blog'
   id:
     | '__root__'
     | '/'
@@ -220,12 +251,15 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/how-it-works'
     | '/reset-password'
+    | '/search-results'
+    | '/service-categories'
     | '/services'
     | '/_authenticated/admin-dashboard'
     | '/_authenticated/dashboard'
     | '/_authenticated/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
+    | '/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -240,6 +274,8 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HowItWorksRoute: typeof HowItWorksRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SearchResultsRoute: typeof SearchResultsRoute
+  ServiceCategoriesRoute: typeof ServiceCategoriesRoute
   ServicesRoute: typeof ServicesRoute
   ProvidersIdRoute: typeof ProvidersIdRoute
 }
@@ -323,6 +359,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/search-results': {
+      id: '/search-results'
+      path: '/search-results'
+      fullPath: '/search-results'
+      preLoaderRoute: typeof SearchResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/service-categories': {
+      id: '/service-categories'
+      path: '/service-categories'
+      fullPath: '/service-categories'
+      preLoaderRoute: typeof ServiceCategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
@@ -350,6 +400,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/provider-dashboard'
       preLoaderRoute: typeof AuthenticatedProviderDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/blog/$slug': {
       id: '/blog/$slug'
@@ -385,10 +442,12 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 const BlogRouteChildren: BlogRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
@@ -405,6 +464,8 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   HowItWorksRoute: HowItWorksRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SearchResultsRoute: SearchResultsRoute,
+  ServiceCategoriesRoute: ServiceCategoriesRoute,
   ServicesRoute: ServicesRoute,
   ProvidersIdRoute: ProvidersIdRoute,
 }
