@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SearchResultsPage } from "@/components/marketplace";
 
-type SearchResultsSearch = { service?: string; location?: string };
+type SearchResultsSearch = { service?: string | undefined; location?: string | undefined };
 
 export const Route = createFileRoute("/search-results")({
   validateSearch: (search: Record<string, unknown>) => ({
