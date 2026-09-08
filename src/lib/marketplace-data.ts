@@ -67,6 +67,19 @@ export const categories: MarketplaceCategory[] = [
   { name: "Events & Catering", slug: "events-catering", icon: PartyPopper, note: "Make it a moment" },
 ];
 
+export const locations: string[] = [
+  "Abuja, FCT",
+  "Gwarinpa, Abuja",
+  "Jabi, Abuja",
+  "Wuse, Abuja",
+  "Maitama, Abuja",
+  "Garki, Abuja",
+  "Kubwa, Abuja",
+  "Lugbe, Abuja",
+  "Gwagwalada, Abuja",
+  "Asokoro, Abuja",
+];
+
 export const blogPosts: BlogPost[] = [
   { title: "How to choose a reliable professional for your home", category: "Getting started", date: "May 12, 2026" },
   { title: "What a verified provider profile should tell you", category: "Trust & safety", date: "May 05, 2026" },
