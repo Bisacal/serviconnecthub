@@ -57,12 +57,32 @@ export function PublicFooter() {
 
 export function PublicLayout({ children }: { children: ReactNode }) { return <div className="min-h-screen bg-cream text-ink"><PublicHeader />{children}<PublicFooter /></div>; }
 
-function SearchPanel({ compact = false }: { compact?: boolean }) {
+function SearchPanel({ compact = false, idPrefix = "hero" }: { compact?: boolean; idPrefix?: string }) {
   const navigate = useNavigate();
   const [service, setService] = useState("");
   const [location, setLocation] = useState("Abuja, FCT");
-  const search = () => navigate({ to: "/search-results", search: { service, location } });
-  return <div className={`rounded-3xl bg-primary-foreground p-4 shadow-soft ring-1 ring-sand-deep/60 ${compact ? "md:flex md:items-end md:gap-3" : ""}`}><div className={compact ? "flex-1" : ""}><label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.17em] text-amber">What do you need?</label><div className="flex h-12 items-center gap-3 rounded-2xl bg-cream px-4 ring-1 ring-sand-deep/70 focus-within:ring-terracotta"><Search className="size-4 text-terracotta" /><input value={service} onChange={(event) => setService(event.target.value)} className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-muted-warm" placeholder="Solar, mechanic, tutor…" /></div></div><div className={`mt-3 ${compact ? "md:mt-0 md:w-[220px]" : ""}`}><label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.17em] text-amber">Location</label><div className="flex h-12 items-center gap-3 rounded-2xl bg-cream px-4 ring-1 ring-sand-deep/70 focus-within:ring-terracotta"><MapPin className="size-4 text-terracotta" /><input value={location} onChange={(event) => setLocation(event.target.value)} className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-muted-warm" placeholder="Abuja, FCT" /></div></div><Button variant="terracotta" size="xl" className={`mt-3 w-full rounded-2xl ${compact ? "md:mt-0 md:w-auto" : ""}`} onClick={search}>Find a service <ArrowRight /></Button><div className="mt-3 flex flex-wrap gap-2"><button type="button" onClick={() => setService("Plumbing")} className="rounded-full bg-sand px-3 py-1.5 text-[11px] font-semibold text-ink">Plumbers</button><button type="button" onClick={() => setService("Tutoring")} className="rounded-full bg-sand px-3 py-1.5 text-[11px] font-semibold text-ink">Tutors</button><button type="button" onClick={() => setService("Automotive")} className="rounded-full bg-sand px-3 py-1.5 text-[11px] font-semibold text-ink">Mechanics</button></div></div>;
+  const search = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    navigate({ to: "/search-results", search: { service: service.trim(), location: location.trim() || "Abuja, FCT" } });
+  };
+  const serviceListId = `${idPrefix}-service-list`;
+  const locationListId = `${idPrefix}-location-list`;
+  const fieldClass = "flex h-12 items-center gap-3 rounded-2xl bg-cream px-4 ring-1 ring-sand-deep/70 focus-within:ring-terracotta";
+  const inputClass = "min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-muted-warm";
+  return <form onSubmit={search} role="search" aria-label="Search for a service" className={`rounded-3xl bg-primary-foreground p-4 shadow-soft ring-1 ring-sand-deep/60 md:p-5 ${compact ? "md:flex md:items-end md:gap-3" : ""}`}>
+    <div className={compact ? "flex-1" : ""}>
+      <label htmlFor={`${idPrefix}-service`} className="mb-2 block text-[10px] font-bold uppercase tracking-[0.17em] text-amber">What do you need?</label>
+      <div className={fieldClass}><Search className="size-4 shrink-0 text-terracotta" aria-hidden="true" /><input id={`${idPrefix}-service`} name="service" type="search" list={serviceListId} autoComplete="off" value={service} onChange={(event) => setService(event.target.value)} className={inputClass} placeholder="Solar, mechanic, tutor…" /></div>
+      <datalist id={serviceListId}>{categories.map((category) => <option key={category.slug} value={category.name} />)}</datalist>
+    </div>
+    <div className={`mt-3 ${compact ? "md:mt-0 md:w-[220px]" : ""}`}>
+      <label htmlFor={`${idPrefix}-location`} className="mb-2 block text-[10px] font-bold uppercase tracking-[0.17em] text-amber">Location</label>
+      <div className={fieldClass}><MapPin className="size-4 shrink-0 text-terracotta" aria-hidden="true" /><input id={`${idPrefix}-location`} name="location" type="text" list={locationListId} autoComplete="off" value={location} onChange={(event) => setLocation(event.target.value)} className={inputClass} placeholder="Abuja, FCT" /></div>
+      <datalist id={locationListId}>{locations.map((place) => <option key={place} value={place} />)}</datalist>
+    </div>
+    <Button type="submit" variant="terracotta" size="xl" className={`mt-3 h-12 w-full rounded-2xl text-base ${compact ? "md:mt-0 md:w-auto" : ""}`}>Search <ArrowRight aria-hidden="true" /></Button>
+    {!compact && <div className="mt-4 flex flex-wrap items-center gap-2"><span className="text-[11px] font-semibold uppercase tracking-wide text-muted-warm">Popular:</span>{["Plumbing", "Education & Tutoring", "Automotive Services", "Solar & Energy"].map((name) => <button type="button" key={name} onClick={() => setService(name)} className="rounded-full bg-sand px-3 py-1.5 text-[11px] font-semibold text-ink transition-colors hover:bg-sand-deep">{name}</button>)}</div>}
+  </form>;
 }
 
 function CategoryCard({ category }: { category: (typeof categories)[number] }) { const Icon = category.icon; return <Link to="/search-results" search={{ service: category.name, location: "Abuja, FCT" }} className="group rounded-2xl bg-primary-foreground p-4 ring-1 ring-sand-deep/60 transition-all hover:-translate-y-1 hover:shadow-lift"><span className="grid size-11 place-items-center rounded-xl bg-sand text-terracotta transition-colors group-hover:bg-terracotta group-hover:text-primary-foreground"><Icon className="size-5" /></span><span className="mt-3 block font-display text-[16px] font-semibold leading-tight text-brand">{category.name}</span><span className="mt-1 block text-xs leading-5 text-muted-warm">{category.note}</span></Link>; }
