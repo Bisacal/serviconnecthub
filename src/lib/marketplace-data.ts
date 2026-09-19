@@ -30,6 +30,8 @@ export type Provider = {
   verified?: boolean;
   experience: string;
   availability: string;
+  categorySlug: string;
+  subcategory: string;
 };
 
 export type MarketplaceCategory = {
@@ -37,6 +39,8 @@ export type MarketplaceCategory = {
   slug: string;
   icon: LucideIcon;
   note: string;
+  description: string;
+  subcategories: string[];
 };
 
 export type BlogPost = {
