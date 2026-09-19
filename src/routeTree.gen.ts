@@ -29,6 +29,8 @@ import { Route as AuthenticatedProviderDashboardRouteImport } from './routes/_au
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ProvidersIdRouteImport } from './routes/providers.$id'
+import { Route as ServiceCategoriesIndexRouteImport } from './routes/service-categories.index'
+import { Route as ServiceCategoriesSlugRouteImport } from './routes/service-categories.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -131,6 +133,16 @@ const ProvidersIdRoute = ProvidersIdRouteImport.update({
   path: '/providers/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServiceCategoriesIndexRoute = ServiceCategoriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ServiceCategoriesRoute,
+} as any)
+const ServiceCategoriesSlugRoute = ServiceCategoriesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ServiceCategoriesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -144,14 +156,16 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search-results': typeof SearchResultsRoute
-  '/service-categories': typeof ServiceCategoriesRoute
+  '/service-categories': typeof ServiceCategoriesRouteWithChildren
   '/services': typeof ServicesRoute
   '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
+  '/service-categories/$slug': typeof ServiceCategoriesSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/service-categories/': typeof ServiceCategoriesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -164,14 +178,15 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search-results': typeof SearchResultsRoute
-  '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
   '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
+  '/service-categories/$slug': typeof ServiceCategoriesSlugRoute
   '/blog': typeof BlogIndexRoute
+  '/service-categories': typeof ServiceCategoriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -187,14 +202,16 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search-results': typeof SearchResultsRoute
-  '/service-categories': typeof ServiceCategoriesRoute
+  '/service-categories': typeof ServiceCategoriesRouteWithChildren
   '/services': typeof ServicesRoute
   '/_authenticated/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/providers/$id': typeof ProvidersIdRoute
+  '/service-categories/$slug': typeof ServiceCategoriesSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/service-categories/': typeof ServiceCategoriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -217,7 +234,9 @@ export interface FileRouteTypes {
     | '/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
+    | '/service-categories/$slug'
     | '/blog/'
+    | '/service-categories/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -230,14 +249,15 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/reset-password'
     | '/search-results'
-    | '/service-categories'
     | '/services'
     | '/admin-dashboard'
     | '/dashboard'
     | '/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
+    | '/service-categories/$slug'
     | '/blog'
+    | '/service-categories'
   id:
     | '__root__'
     | '/'
@@ -259,7 +279,9 @@ export interface FileRouteTypes {
     | '/_authenticated/provider-dashboard'
     | '/blog/$slug'
     | '/providers/$id'
+    | '/service-categories/$slug'
     | '/blog/'
+    | '/service-categories/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -275,7 +297,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchResultsRoute: typeof SearchResultsRoute
-  ServiceCategoriesRoute: typeof ServiceCategoriesRoute
+  ServiceCategoriesRoute: typeof ServiceCategoriesRouteWithChildren
   ServicesRoute: typeof ServicesRoute
   ProvidersIdRoute: typeof ProvidersIdRoute
 }
@@ -422,6 +444,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProvidersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/service-categories/': {
+      id: '/service-categories/'
+      path: '/'
+      fullPath: '/service-categories/'
+      preLoaderRoute: typeof ServiceCategoriesIndexRouteImport
+      parentRoute: typeof ServiceCategoriesRoute
+    }
+    '/service-categories/$slug': {
+      id: '/service-categories/$slug'
+      path: '/$slug'
+      fullPath: '/service-categories/$slug'
+      preLoaderRoute: typeof ServiceCategoriesSlugRouteImport
+      parentRoute: typeof ServiceCategoriesRoute
+    }
   }
 }
 
@@ -452,6 +488,19 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface ServiceCategoriesRouteChildren {
+  ServiceCategoriesSlugRoute: typeof ServiceCategoriesSlugRoute
+  ServiceCategoriesIndexRoute: typeof ServiceCategoriesIndexRoute
+}
+
+const ServiceCategoriesRouteChildren: ServiceCategoriesRouteChildren = {
+  ServiceCategoriesSlugRoute: ServiceCategoriesSlugRoute,
+  ServiceCategoriesIndexRoute: ServiceCategoriesIndexRoute,
+}
+
+const ServiceCategoriesRouteWithChildren =
+  ServiceCategoriesRoute._addFileChildren(ServiceCategoriesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -465,7 +514,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchResultsRoute: SearchResultsRoute,
-  ServiceCategoriesRoute: ServiceCategoriesRoute,
+  ServiceCategoriesRoute: ServiceCategoriesRouteWithChildren,
   ServicesRoute: ServicesRoute,
   ProvidersIdRoute: ProvidersIdRoute,
 }

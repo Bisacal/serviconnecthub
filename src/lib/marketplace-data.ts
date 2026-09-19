@@ -30,6 +30,8 @@ export type Provider = {
   verified?: boolean;
   experience: string;
   availability: string;
+  categorySlug: string;
+  subcategory: string;
 };
 
 export type MarketplaceCategory = {
@@ -37,6 +39,8 @@ export type MarketplaceCategory = {
   slug: string;
   icon: LucideIcon;
   note: string;
+  description: string;
+  subcategories: string[];
 };
 
 export type BlogPost = {
@@ -46,26 +50,42 @@ export type BlogPost = {
 };
 
 export const providers: Provider[] = [
-  { id: "bola-okafor", name: "Bola Okafor", profession: "Solar installer", location: "Gwagwalada, Abuja", rating: "4.9", reviews: 212, price: "₦15,000", image: bolaImage, verified: true, experience: "8 years", availability: "Available today" },
-  { id: "emeka-nwosu", name: "Emeka Nwosu", profession: "Auto mechanic", location: "Rukuba, Abuja", rating: "4.8", reviews: 146, price: "₦8,000", image: emekaImage, verified: true, experience: "11 years", availability: "Available tomorrow" },
-  { id: "tunde-alaba", name: "Tunde Alaba", profession: "Plumber", location: "Jabi, Abuja", rating: "4.7", reviews: 94, price: "₦6,000", image: tundeImage, experience: "6 years", availability: "Available today" },
-  { id: "amina-yusuf", name: "Amina Yusuf", profession: "Home tutor · Maths", location: "Gwarinpa, Abuja", rating: "5.0", reviews: 168, price: "₦8,500/hr", image: bolaImage, verified: true, experience: "9 years", availability: "Weekday evenings" },
+  { id: "bola-okafor", name: "Bola Okafor", profession: "Solar installer", location: "Gwagwalada, Abuja", rating: "4.9", reviews: 212, price: "₦15,000", image: bolaImage, verified: true, experience: "8 years", availability: "Available today", categorySlug: "solar-energy", subcategory: "Solar Installation" },
+  { id: "emeka-nwosu", name: "Emeka Nwosu", profession: "Auto mechanic", location: "Rukuba, Abuja", rating: "4.8", reviews: 146, price: "₦8,000", image: emekaImage, verified: true, experience: "11 years", availability: "Available tomorrow", categorySlug: "automotive-services", subcategory: "Mechanic" },
+  { id: "tunde-alaba", name: "Tunde Alaba", profession: "Plumber", location: "Jabi, Abuja", rating: "4.7", reviews: 94, price: "₦6,000", image: tundeImage, experience: "6 years", availability: "Available today", categorySlug: "plumbing", subcategory: "Pipe Fitting & Repairs" },
+  { id: "amina-yusuf", name: "Amina Yusuf", profession: "Home tutor · Maths", location: "Gwarinpa, Abuja", rating: "5.0", reviews: 168, price: "₦8,500/hr", image: bolaImage, verified: true, experience: "9 years", availability: "Weekday evenings", categorySlug: "education-tutoring", subcategory: "Mathematics Tutor" },
+  { id: "chidi-okonkwo", name: "Chidi Okonkwo", profession: "Electrician", location: "Wuse, Abuja", rating: "4.8", reviews: 121, price: "₦5,500", image: emekaImage, verified: true, experience: "10 years", availability: "Available today", categorySlug: "electrical-services", subcategory: "Home Wiring & Repairs" },
+  { id: "funke-adeleke", name: "Funke Adeleke", profession: "House painter", location: "Garki, Abuja", rating: "4.6", reviews: 78, price: "₦12,000", image: bolaImage, experience: "7 years", availability: "Available tomorrow", categorySlug: "painting", subcategory: "Interior Painting" },
+  { id: "ibrahim-sule", name: "Ibrahim Sule", profession: "Deep cleaning specialist", location: "Kubwa, Abuja", rating: "4.9", reviews: 187, price: "₦10,000", image: tundeImage, verified: true, experience: "6 years", availability: "Available today", categorySlug: "cleaning", subcategory: "Deep Cleaning" },
+  { id: "grace-ekong", name: "Grace Ekong", profession: "Carpenter & furniture maker", location: "Lugbe, Abuja", rating: "4.7", reviews: 65, price: "₦9,000", image: bolaImage, experience: "12 years", availability: "Weekdays", categorySlug: "carpentry", subcategory: "Custom Furniture" },
+  { id: "segun-balogun", name: "Segun Balogun", profession: "Laptop & phone repair", location: "Maitama, Abuja", rating: "4.8", reviews: 143, price: "₦7,000", image: emekaImage, verified: true, experience: "8 years", availability: "Available today", categorySlug: "technology-services", subcategory: "Device Repair" },
+  { id: "ngozi-obi", name: "Ngozi Obi", profession: "Event photographer", location: "Asokoro, Abuja", rating: "4.9", reviews: 112, price: "₦25,000", image: bolaImage, verified: true, experience: "7 years", availability: "Weekends", categorySlug: "creative-services", subcategory: "Photography" },
+  { id: "kemi-owolabi", name: "Kemi Owolabi", profession: "Hair stylist & braider", location: "Gwarinpa, Abuja", rating: "4.9", reviews: 231, price: "₦6,500", image: bolaImage, verified: true, experience: "9 years", availability: "Available today", categorySlug: "fashion-beauty", subcategory: "Hair Styling" },
+  { id: "yusuf-bello", name: "Yusuf Bello", profession: "Caterer · Nigerian dishes", location: "Jabi, Abuja", rating: "4.8", reviews: 97, price: "₦50,000", image: tundeImage, experience: "10 years", availability: "Book 1 week ahead", categorySlug: "events-catering", subcategory: "Catering" },
 ];
 
 export const categories: MarketplaceCategory[] = [
-  { name: "Education & Tutoring", slug: "education-tutoring", icon: BookOpen, note: "Tutors for every stage" },
-  { name: "Automotive Services", slug: "automotive-services", icon: Wrench, note: "Keep moving with confidence" },
-  { name: "Solar & Energy", slug: "solar-energy", icon: Sun, note: "Power for your home" },
-  { name: "Electrical Services", slug: "electrical-services", icon: Zap, note: "Safe, reliable repairs" },
-  { name: "Plumbing", slug: "plumbing", icon: Droplets, note: "Fix leaks and flow" },
-  { name: "Painting", slug: "painting", icon: Paintbrush, note: "Refresh your space" },
-  { name: "Cleaning", slug: "cleaning", icon: Sparkles, note: "A better kind of clean" },
-  { name: "Carpentry", slug: "carpentry", icon: Hammer, note: "Made to fit your life" },
-  { name: "Technology Services", slug: "technology-services", icon: Laptop, note: "Tech support, sorted" },
-  { name: "Creative Services", slug: "creative-services", icon: Camera, note: "Bring ideas to life" },
-  { name: "Fashion & Beauty", slug: "fashion-beauty", icon: Scissors, note: "Style your way" },
-  { name: "Events & Catering", slug: "events-catering", icon: PartyPopper, note: "Make it a moment" },
+  { name: "Education & Tutoring", slug: "education-tutoring", icon: BookOpen, note: "Tutors for every stage", description: "Patient, vetted tutors for children, students and adults — at home or online.", subcategories: ["Mathematics Tutor", "Science Tutor", "English Tutor", "Computer Tutor", "Home Lesson Tutor", "Exam Preparation (WAEC, JAMB)", "Language Tutor"] },
+  { name: "Automotive Services", slug: "automotive-services", icon: Wrench, note: "Keep moving with confidence", description: "Trusted hands for diagnostics, repairs and everyday car care.", subcategories: ["Mechanic", "Auto Electrician", "Car Diagnostics", "Car Repair", "Panel Beating & Body Work", "Car AC Service", "Mobile Mechanic"] },
+  { name: "Solar & Energy", slug: "solar-energy", icon: Sun, note: "Power for your home", description: "Reliable solar and inverter solutions sized for your home or business.", subcategories: ["Solar Installation", "Solar Maintenance", "Inverter Installation", "Battery Replacement", "Solar Consultation & Sizing"] },
+  { name: "Electrical Services", slug: "electrical-services", icon: Zap, note: "Safe, reliable repairs", description: "Certified electricians for safe installations, repairs and upgrades.", subcategories: ["Home Wiring & Repairs", "Lighting Installation", "Socket & Switch Repair", "Generator Installation", "Electrical Safety Inspection"] },
+  { name: "Plumbing", slug: "plumbing", icon: Droplets, note: "Fix leaks and flow", description: "From leaking taps to full bathroom fitting, done neatly.", subcategories: ["Pipe Fitting & Repairs", "Leak Detection", "Bathroom Installation", "Water Heater Installation", "Drainage & Unblocking"] },
+  { name: "Painting", slug: "painting", icon: Paintbrush, note: "Refresh your space", description: "Clean lines, honest quotes and a finish that lasts.", subcategories: ["Interior Painting", "Exterior Painting", "Wallpaper Installation", "Decorative Finishes", "Office Painting"] },
+  { name: "Cleaning", slug: "cleaning", icon: Sparkles, note: "A better kind of clean", description: "Thorough, dependable cleaning for homes and offices.", subcategories: ["Home Cleaning", "Deep Cleaning", "Post-Construction Cleaning", "Office Cleaning", "Laundry & Ironing"] },
+  { name: "Carpentry", slug: "carpentry", icon: Hammer, note: "Made to fit your life", description: "Skilled carpenters for repairs, fittings and custom furniture.", subcategories: ["Custom Furniture", "Door & Window Repair", "Shelving & Storage", "Kitchen Cabinets", "Wood Polishing & Restoration"] },
+  { name: "Technology Services", slug: "technology-services", icon: Laptop, note: "Tech support, sorted", description: "Friendly tech help for devices, networks and small business systems.", subcategories: ["Device Repair", "Computer Setup & Support", "Wi-Fi & Network Setup", "CCTV Installation", "Software Installation"] },
+  { name: "Creative Services", slug: "creative-services", icon: Camera, note: "Bring ideas to life", description: "Photographers, designers and makers for your next project.", subcategories: ["Photography", "Videography", "Graphic Design", "Content Writing", "Branding & Logo Design"] },
+  { name: "Fashion & Beauty", slug: "fashion-beauty", icon: Scissors, note: "Style your way", description: "Stylists, tailors and beauty professionals who come to you.", subcategories: ["Hair Styling", "Makeup Artistry", "Tailoring & Alterations", "Barbering", "Nail Care", "Fashion Design"] },
+  { name: "Events & Catering", slug: "events-catering", icon: PartyPopper, note: "Make it a moment", description: "Everything you need to host well — food, décor and coordination.", subcategories: ["Catering", "Event Planning", "Decoration", "MC & Entertainment", "Equipment Rental", "Cake Baking"] },
 ];
+
+export function getCategoryBySlug(slug: string) {
+  return categories.find((category) => category.slug === slug);
+}
+
+export function providersForCategory(slug: string) {
+  return providers.filter((provider) => provider.categorySlug === slug);
+}
 
 export const locations: string[] = [
   "Abuja, FCT",
