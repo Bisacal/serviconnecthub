@@ -1,19 +1,25 @@
-import { useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   ArrowRight,
   Award,
+  BadgeCheck,
   Bell,
+  BriefcaseBusiness,
+  CalendarCheck,
   Check,
   ChevronDown,
   ChevronRight,
   CircleHelp,
   Clock3,
+  Heart,
   MapPin,
   Menu,
   MessageCircle,
   Search,
   ShieldCheck,
+  SlidersHorizontal,
   Sparkles,
   Star,
   UserRound,
@@ -23,7 +29,27 @@ import {
 import heroImage from "@/assets/serviconnect-hero.jpg";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth-provider";
-import { blogPosts, categories, getCategoryBySlug, locations, providers, providersForCategory, type Provider } from "@/lib/marketplace-data";
+import {
+  availabilityOptions,
+  blogPosts,
+  categories,
+  experienceFilters,
+  getCategoryBySlug,
+  locations,
+  priceRanges,
+  providerBio,
+  providerBusinessName,
+  providerExperienceYears,
+  providerPortfolio,
+  providerPriceValue,
+  providerReviews,
+  providerServices,
+  providers,
+  providersForCategory,
+  ratingFilters,
+  type Provider,
+} from "@/lib/marketplace-data";
+
 
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return <Link to="/" className="flex items-center gap-2" aria-label="SERVICONNECT home"><span className="grid size-10 place-items-center rounded-full bg-terracotta font-display text-lg font-semibold leading-none text-primary-foreground">S</span><span><span className={`block font-display text-[20px] font-semibold tracking-tight ${inverse ? "text-primary-foreground" : "text-brand"}`}>Serviconnect</span><span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-terracotta-deep">Trusted pros</span></span></Link>;
