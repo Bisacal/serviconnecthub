@@ -127,9 +127,185 @@ export function ServiceCategoriesPage() { return <PublicLayout><main><section cl
 
 export function SearchResultsPage({ service = "", location = "Abuja, FCT" }: { service?: string | undefined; location?: string | undefined }) { const [sort, setSort] = useState("Recommended"); const query = service.trim(); const aliases = query.toLowerCase().replace(/&/g, "and").split(/\s+/).filter((word) => !["and", "services", "service"].includes(word)); const matches = providers.filter((provider) => aliases.length === 0 || aliases.some((word) => { const haystack = `${provider.profession} ${provider.location}`.toLowerCase(); const stem = word.length > 5 ? word.slice(0, 5) : word; return haystack.includes(word) || haystack.includes(stem) || (word === "automotive" && provider.profession.toLowerCase().includes("auto")) || (word === "education" && provider.profession.toLowerCase().includes("tutor")); })); const sorted = [...matches].sort((a, b) => sort === "Highest rated" ? Number(b.rating) - Number(a.rating) : sort === "Price: low to high" ? Number(a.price.replace(/[^0-9]/g, "")) - Number(b.price.replace(/[^0-9]/g, "")) : 0); return <PublicLayout><main><section className="bg-sand py-10 md:py-14"><div className="page-shell"><p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-deep">Search results</p><h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold text-brand md:text-6xl">{query ? `Professionals for ${query}` : "Find a trusted professional"}</h1><p className="mt-3 text-sm text-muted-warm">Serving {location || "Abuja, FCT"} with sample profiles for the Phase 1 directory.</p><div className="mt-7"><SearchPanel compact idPrefix="results" initialService={service} initialLocation={location || "Abuja, FCT"} /></div></div></section><section className="page-shell py-10 md:py-14"><div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-warm"><span className="font-semibold text-brand">{sorted.length} sample {sorted.length === 1 ? "professional" : "professionals"}</span> found</p><label className="flex items-center gap-2 text-sm text-muted-warm">Sort by <select value={sort} onChange={(event) => setSort(event.target.value)} className="rounded-lg border border-sand-deep bg-primary-foreground px-3 py-2 text-brand outline-none"><option>Recommended</option><option>Highest rated</option><option>Price: low to high</option></select></label></div>{sorted.length > 0 ? <div className="mt-5 grid gap-3 lg:grid-cols-2">{sorted.map((provider) => <ProviderCard provider={provider} key={provider.id} />)}</div> : <div className="mt-8 rounded-3xl bg-primary-foreground p-8 text-center ring-1 ring-sand-deep/70"><Search className="mx-auto size-8 text-terracotta" /><h2 className="mt-4 font-display text-2xl font-semibold text-brand">No sample profiles match yet.</h2><p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-warm">Try a broader service name or browse the full Abuja directory while more providers are added.</p><Button asChild variant="terracotta" className="mt-6 rounded-full"><Link to="/directory" search={{ service: "", location: location || "Abuja, FCT" }}>Browse directory <ArrowRight /></Link></Button></div>}</section></main></PublicLayout>; }
 
-export function DirectoryPage() { const [sort, setSort] = useState("Recommended"); return <PublicLayout><main><section className="bg-sand py-10 md:py-14"><div className="page-shell"><p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-deep">Abuja directory</p><h1 className="mt-3 font-display text-4xl font-semibold text-brand md:text-6xl">Find your next trusted pro.</h1><div className="mt-7"><SearchPanel compact idPrefix="directory" /></div></div></section><section className="page-shell grid gap-8 py-10 lg:grid-cols-[220px_1fr]"><aside className="hidden lg:block"><p className="font-display text-xl font-semibold text-brand">Refine results</p><div className="mt-5 space-y-5 text-sm"><label className="flex items-center justify-between border-b border-sand-deep pb-4 text-muted-warm">Category <ChevronDown className="size-4" /></label><label className="flex items-center justify-between border-b border-sand-deep pb-4 text-muted-warm">Area <ChevronDown className="size-4" /></label><label className="flex items-center justify-between border-b border-sand-deep pb-4 text-muted-warm">Budget <ChevronDown className="size-4" /></label><label className="flex items-center justify-between border-b border-sand-deep pb-4 text-muted-warm">Availability <ChevronDown className="size-4" /></label></div><div className="mt-7 rounded-2xl bg-sand p-4"><ShieldCheck className="size-5 text-accent-green" /><p className="mt-3 font-semibold text-brand">Only verified?</p><p className="mt-1 text-xs leading-5 text-muted-warm">Use filters to narrow your search to trusted providers.</p></div></aside><div><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-sm text-muted-warm"><span className="font-semibold text-brand">128 professionals</span> serving Abuja</p></div><label className="flex items-center gap-2 text-sm text-muted-warm">Sort by <select value={sort} onChange={(event) => setSort(event.target.value)} className="rounded-lg border border-sand-deep bg-primary-foreground px-3 py-2 text-brand outline-none"><option>Recommended</option><option>Highest rated</option><option>Price: low to high</option></select></label></div><div className="mt-5 grid gap-3">{providers.map((provider) => <ProviderCard provider={provider} key={provider.id} />)}</div></div></section></main></PublicLayout>; }
+function FilterSelect({ label, value, onChange, options }: { label: string; value: string; onChange: (value: string) => void; options: string[] }) {
+  const id = `filter-${label.toLowerCase().replace(/\s+/g, "-")}`;
+  return (
+    <div>
+      <label htmlFor={id} className="block text-xs font-bold uppercase tracking-[0.14em] text-muted-warm">{label}</label>
+      <div className="relative mt-2">
+        <select id={id} value={value} onChange={(event) => onChange(event.target.value)} className="w-full appearance-none rounded-xl border border-sand-deep bg-primary-foreground px-3 py-2.5 pr-9 text-sm font-medium text-brand outline-none focus-visible:ring-2 focus-visible:ring-terracotta">
+          {options.map((option) => <option key={option} value={option}>{option}</option>)}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-warm" />
+      </div>
+    </div>
+  );
+}
 
-export function ProviderProfilePage({ id }: { id: string }) { const provider = providers.find((item) => item.id === id); if (provider === undefined) return null; return <PublicLayout><main className="page-shell py-10 md:py-16"><Link to="/directory" search={{ service: "", location: "Abuja, FCT" }} className="inline-flex items-center gap-2 text-sm font-semibold text-terracotta-deep"><ArrowRight className="size-4 rotate-180" />Back to directory</Link><div className="mt-8 grid gap-8 lg:grid-cols-[1fr_0.72fr]"><section><div className="flex flex-col gap-5 sm:flex-row sm:items-end"><img src={provider.image} alt={`${provider.name}, ${provider.profession}`} width={700} height={700} className="size-36 rounded-3xl object-cover" /><div><div className="flex items-center gap-2"><h1 className="font-display text-4xl font-semibold text-brand">{provider.name}</h1>{provider.verified && <ShieldCheck className="size-6 text-accent-green" aria-label="Verified provider" />}</div><p className="mt-1 text-lg text-ink/80">{provider.profession}</p><p className="mt-3 flex items-center gap-2 text-sm text-muted-warm"><MapPin className="size-4 text-terracotta" />{provider.location}</p></div></div><div className="mt-8 grid grid-cols-3 gap-3"><div className="rounded-2xl bg-sand p-4"><p className="font-display text-2xl font-semibold text-brand">{provider.rating}</p><p className="mt-1 text-xs text-muted-warm">rating · {provider.reviews} reviews</p></div><div className="rounded-2xl bg-sand p-4"><p className="font-display text-2xl font-semibold text-brand">{provider.experience}</p><p className="mt-1 text-xs text-muted-warm">experience</p></div><div className="rounded-2xl bg-sand p-4"><p className="font-display text-2xl font-semibold text-brand">{provider.price}</p><p className="mt-1 text-xs text-muted-warm">starting price</p></div></div><div className="mt-10"><h2 className="font-display text-3xl font-semibold text-brand">About this provider</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-muted-warm">{provider.name} brings practical experience, clear communication and dependable service to homes and businesses around Abuja. Their profile is ready for client requests in Phase 1.</p><h2 className="mt-10 font-display text-3xl font-semibold text-brand">Services offered</h2><div className="mt-4 flex flex-wrap gap-2"><span className="rounded-full bg-sand px-4 py-2 text-sm font-semibold text-ink">Installation & repairs</span><span className="rounded-full bg-sand px-4 py-2 text-sm font-semibold text-ink">Maintenance</span><span className="rounded-full bg-sand px-4 py-2 text-sm font-semibold text-ink">Home visits</span></div></div></section><aside className="h-fit rounded-3xl bg-primary-foreground p-6 shadow-soft ring-1 ring-sand-deep/70"><p className="text-xs font-bold uppercase tracking-[0.18em] text-amber">Ready to get started?</p><h2 className="mt-3 font-display text-3xl font-semibold text-brand">Request a conversation.</h2><p className="mt-3 text-sm leading-6 text-muted-warm">Bookings and messaging are coming in the next phase. For now, save this provider and keep exploring the directory.</p><Button asChild variant="terracotta" size="xl" className="mt-6 w-full rounded-2xl"><Link to="/auth" search={{ mode: "signup", role: "client" }}>Create a client account <ArrowRight /></Link></Button><div className="mt-5 flex items-center gap-2 border-t border-sand-deep pt-5 text-xs text-muted-warm"><ShieldCheck className="size-4 text-accent-green" />Your private details stay protected.</div></aside></div></main></PublicLayout>; }
+export function DirectoryPage({ service = "", location = "" }: { service?: string | undefined; location?: string | undefined }) {
+  const [sort, setSort] = useState("Recommended");
+  const [showFilters, setShowFilters] = useState(false);
+  const categoryFromService = categories.find((item) => item.name.toLowerCase() === service.trim().toLowerCase());
+  const [category, setCategory] = useState(categoryFromService ? categoryFromService.name : "All categories");
+  const [area, setArea] = useState(location && locations.includes(location) ? location : "All of Abuja");
+  const [price, setPrice] = useState(priceRanges[0]!.label);
+  const [rating, setRating] = useState(ratingFilters[0]!.label);
+  const [experience, setExperience] = useState(experienceFilters[0]!.label);
+  const [availability, setAvailability] = useState(availabilityOptions[0]!);
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+
+  const filtered = useMemo(() => {
+    const range = priceRanges.find((item) => item.label === price) ?? priceRanges[0]!;
+    const minRating = (ratingFilters.find((item) => item.label === rating) ?? ratingFilters[0]!).min;
+    const minYears = (experienceFilters.find((item) => item.label === experience) ?? experienceFilters[0]!).min;
+    const list = providers.filter((provider) => {
+      if (category !== "All categories" && getCategoryBySlug(provider.categorySlug)?.name !== category) return false;
+      if (area !== "All of Abuja" && !provider.location.toLowerCase().includes(area.split(",")[0]!.toLowerCase())) return false;
+      const value = providerPriceValue(provider);
+      if (value < range.min || value > range.max) return false;
+      if (Number(provider.rating) < minRating) return false;
+      if (providerExperienceYears(provider) < minYears) return false;
+      if (availability !== availabilityOptions[0] && provider.availability !== availability) return false;
+      if (verifiedOnly && !provider.verified) return false;
+      return true;
+    });
+    return list.sort((a, b) => sort === "Highest rated" ? Number(b.rating) - Number(a.rating) : sort === "Price: low to high" ? providerPriceValue(a) - providerPriceValue(b) : sort === "Most experienced" ? providerExperienceYears(b) - providerExperienceYears(a) : 0);
+  }, [category, area, price, rating, experience, availability, verifiedOnly, sort]);
+
+  const resetFilters = () => {
+    setCategory("All categories");
+    setArea("All of Abuja");
+    setPrice(priceRanges[0]!.label);
+    setRating(ratingFilters[0]!.label);
+    setExperience(experienceFilters[0]!.label);
+    setAvailability(availabilityOptions[0]!);
+    setVerifiedOnly(false);
+  };
+
+  const filterPanel = (
+    <div className="space-y-5">
+      <FilterSelect label="Service category" value={category} onChange={setCategory} options={["All categories", ...categories.map((item) => item.name)]} />
+      <FilterSelect label="Location" value={area} onChange={setArea} options={["All of Abuja", ...locations]} />
+      <FilterSelect label="Price range" value={price} onChange={setPrice} options={priceRanges.map((item) => item.label)} />
+      <FilterSelect label="Rating" value={rating} onChange={setRating} options={ratingFilters.map((item) => item.label)} />
+      <FilterSelect label="Experience" value={experience} onChange={setExperience} options={experienceFilters.map((item) => item.label)} />
+      <FilterSelect label="Availability" value={availability} onChange={setAvailability} options={availabilityOptions} />
+      <label className="flex items-center gap-3 rounded-2xl bg-sand p-4 text-sm font-semibold text-brand">
+        <input type="checkbox" checked={verifiedOnly} onChange={(event) => setVerifiedOnly(event.target.checked)} className="size-4" />
+        <span className="flex items-center gap-1.5"><ShieldCheck className="size-4 text-accent-green" /> Verified providers only</span>
+      </label>
+      <Button variant="outline" className="w-full rounded-full" onClick={resetFilters}>Clear all filters</Button>
+    </div>
+  );
+
+  return <PublicLayout><main><section className="bg-sand py-10 md:py-14"><div className="page-shell"><p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-deep">Abuja directory</p><h1 className="mt-3 font-display text-4xl font-semibold text-brand md:text-6xl">Find your next trusted pro.</h1><div className="mt-7"><SearchPanel compact idPrefix="directory" initialService={service} initialLocation={location || "Abuja, FCT"} /></div></div></section>
+    <section className="page-shell grid gap-8 py-10 lg:grid-cols-[260px_1fr]">
+      <aside className="hidden lg:block">
+        <p className="font-display text-xl font-semibold text-brand">Refine results</p>
+        <div className="mt-5">{filterPanel}</div>
+      </aside>
+      <div>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:flex-wrap sm:justify-between">
+          <p className="min-w-0 text-sm text-muted-warm"><span className="font-semibold text-brand">{filtered.length} {filtered.length === 1 ? "professional" : "professionals"}</span> matching your filters</p>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="outline" className="rounded-full lg:hidden" onClick={() => setShowFilters((open) => !open)}><SlidersHorizontal className="size-4" /> Filters</Button>
+            <label className="flex items-center gap-2 text-sm text-muted-warm"><span className="hidden sm:inline">Sort by</span>
+              <select aria-label="Sort providers" value={sort} onChange={(event) => setSort(event.target.value)} className="rounded-lg border border-sand-deep bg-primary-foreground px-3 py-2 text-brand outline-none"><option>Recommended</option><option>Highest rated</option><option>Price: low to high</option><option>Most experienced</option></select>
+            </label>
+          </div>
+        </div>
+        {showFilters && <div className="mt-5 rounded-3xl bg-primary-foreground p-5 ring-1 ring-sand-deep/70 lg:hidden">{filterPanel}</div>}
+        {filtered.length > 0 ? <div className="mt-5 grid gap-3 xl:grid-cols-2">{filtered.map((provider) => <ProviderCard provider={provider} key={provider.id} />)}</div> : <div className="mt-6 rounded-3xl bg-primary-foreground p-8 text-center ring-1 ring-sand-deep/70"><Search className="mx-auto size-8 text-terracotta" /><h2 className="mt-4 font-display text-2xl font-semibold text-brand">No professionals match these filters.</h2><p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-warm">Try widening your price range or clearing a filter to see more of the Abuja directory.</p><Button variant="terracotta" className="mt-6 rounded-full" onClick={resetFilters}>Clear all filters</Button></div>}
+      </div>
+    </section>
+  </main></PublicLayout>;
+}
+
+function RatingStars({ value }: { value: number }) {
+  return <span className="flex items-center gap-0.5" aria-label={`${value} out of 5`}>{[1, 2, 3, 4, 5].map((star) => <Star key={star} className={`size-3.5 ${star <= Math.round(value) ? "fill-amber text-amber" : "text-sand-deep"}`} />)}</span>;
+}
+
+export function ProviderProfilePage({ id }: { id: string }) {
+  const provider = providers.find((item) => item.id === id);
+  const [saved, setSaved] = useState(false);
+  if (provider === undefined) return <PublicLayout><main className="page-shell py-20 text-center"><h1 className="font-display text-4xl font-semibold text-brand">Provider not found</h1><p className="mt-3 text-sm text-muted-warm">This profile is not available.</p><Button asChild variant="terracotta" className="mt-6 rounded-full"><Link to="/directory" search={{ service: "", location: "Abuja, FCT" }}>Back to directory <ArrowRight /></Link></Button></main></PublicLayout>;
+
+  const category = getCategoryBySlug(provider.categorySlug);
+  const reviews = providerReviews(provider);
+  const portfolio = providerPortfolio(provider);
+
+  const toggleSaved = () => {
+    const next = !saved;
+    setSaved(next);
+    if (next) toast.success(`${provider.name} saved to your shortlist`, { description: "Saved providers will appear in your dashboard." });
+    else toast(`${provider.name} removed from your shortlist`);
+  };
+
+  return <PublicLayout><main className="page-shell py-10 md:py-16">
+    <Link to="/directory" search={{ service: "", location: "Abuja, FCT" }} className="inline-flex items-center gap-2 text-sm font-semibold text-terracotta-deep"><ArrowRight className="size-4 rotate-180" />Back to directory</Link>
+    <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_0.72fr]">
+      <section>
+        <header className="flex flex-col gap-5 sm:flex-row sm:items-end">
+          <img src={provider.image} alt={`${provider.name}, ${provider.profession}`} width={700} height={700} className="size-32 shrink-0 rounded-3xl object-cover sm:size-36" />
+          <div className="min-w-0">
+            <div className="flex min-w-0 items-center gap-2"><h1 className="truncate font-display text-3xl font-semibold text-brand md:text-4xl">{provider.name}</h1>{provider.verified && <ShieldCheck className="size-6 shrink-0 text-accent-green" aria-label="Verified provider" />}</div>
+            <p className="mt-1 text-lg text-ink/80">{provider.profession}</p>
+            <p className="mt-1 flex items-center gap-2 text-sm font-semibold text-terracotta-deep"><BriefcaseBusiness className="size-4" />{providerBusinessName(provider)}</p>
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-warm">
+              <span className="flex items-center gap-2"><MapPin className="size-4 text-terracotta" />{provider.location}</span>
+              <span className="flex items-center gap-2"><Clock3 className="size-4 text-accent-green" />{provider.availability}</span>
+              <span className="flex items-center gap-1.5"><RatingStars value={Number(provider.rating)} /> {provider.rating} ({provider.reviews})</span>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${provider.verified ? "bg-accent-green/12 text-accent-green" : "bg-sand text-muted-warm"}`}><BadgeCheck className="size-3.5" />{provider.verified ? "Identity verified" : "Verification pending"}</span>
+              {category && <Link to="/service-categories/$slug" params={{ slug: category.slug }} className="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1.5 text-xs font-semibold text-ink hover:underline">{category.name}</Link>}
+            </div>
+          </div>
+        </header>
+
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="rounded-2xl bg-sand p-4"><p className="font-display text-2xl font-semibold text-brand">{provider.rating}</p><p className="mt-1 text-xs text-muted-warm">rating · {provider.reviews} reviews</p></div>
+          <div className="rounded-2xl bg-sand p-4"><p className="font-display text-2xl font-semibold text-brand">{provider.experience}</p><p className="mt-1 text-xs text-muted-warm">experience</p></div>
+          <div className="rounded-2xl bg-sand p-4"><p className="font-display text-2xl font-semibold text-brand">{provider.price}</p><p className="mt-1 text-xs text-muted-warm">starting price</p></div>
+          <div className="rounded-2xl bg-sand p-4"><p className="font-display text-2xl font-semibold text-brand">{provider.reviews > 150 ? "Top rated" : "Trusted"}</p><p className="mt-1 text-xs text-muted-warm">client standing</p></div>
+        </div>
+
+        <h2 className="mt-10 font-display text-2xl font-semibold text-brand md:text-3xl">Biography</h2>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-warm">{providerBio(provider)}</p>
+
+        <h2 className="mt-10 font-display text-2xl font-semibold text-brand md:text-3xl">Services offered</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">{providerServices(provider).map((item) => <div key={item} className="flex items-center justify-between gap-3 rounded-2xl bg-primary-foreground px-4 py-3 ring-1 ring-sand-deep/60"><span className="min-w-0 text-sm font-semibold text-brand">{item}</span><span className="shrink-0 text-xs text-muted-warm">from {provider.price}</span></div>)}</div>
+
+        <h2 className="mt-10 font-display text-2xl font-semibold text-brand md:text-3xl">Portfolio</h2>
+        <p className="mt-2 text-sm text-muted-warm">Sample work shared by this professional.</p>
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">{portfolio.map((item) => <figure key={item.label} className="overflow-hidden rounded-2xl bg-sand-deep"><img src={item.image} alt={item.label} loading="lazy" className="aspect-[4/3] w-full object-cover" /><figcaption className="px-3 py-2 text-xs font-medium text-muted-warm">{item.label}</figcaption></figure>)}</div>
+
+        <h2 className="mt-10 font-display text-2xl font-semibold text-brand md:text-3xl">Reviews</h2>
+        <div className="mt-4 space-y-3">{reviews.map((review) => <article key={review.author} className="rounded-2xl bg-primary-foreground p-5 ring-1 ring-sand-deep/60"><div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3"><p className="min-w-0 truncate font-display text-[15px] font-semibold text-brand">{review.author}</p><span className="shrink-0 text-xs text-muted-warm">{review.date}</span></div><div className="mt-2"><RatingStars value={review.rating} /></div><p className="mt-3 text-sm leading-6 text-muted-warm">{review.body}</p></article>)}</div>
+      </section>
+
+      <aside className="h-fit space-y-4 lg:sticky lg:top-6">
+        <div className="rounded-3xl bg-primary-foreground p-6 shadow-soft ring-1 ring-sand-deep/70">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber">Ready to get started?</p>
+          <h2 className="mt-3 font-display text-2xl font-semibold text-brand md:text-3xl">Work with {provider.name.split(" ")[0]}.</h2>
+          <p className="mt-3 text-sm leading-6 text-muted-warm">Starting from <span className="font-semibold text-brand">{provider.price}</span> · {provider.availability}</p>
+          <div className="mt-6 space-y-3">
+            <Button variant="terracotta" size="lg" className="w-full rounded-full" onClick={() => toast.success("Contact request noted", { description: `Messaging with ${provider.name} opens once bookings go live.` })}><MessageCircle className="size-4" /> Contact provider</Button>
+            <Button variant="brand" size="lg" className="w-full rounded-full" onClick={() => toast.success("Service request started", { description: "You'll be able to submit full job details in the next phase." })}><CalendarCheck className="size-4" /> Send service request</Button>
+            <Button variant="outline" size="lg" className="w-full rounded-full" onClick={toggleSaved} aria-pressed={saved}><Heart className={`size-4 ${saved ? "fill-current text-terracotta" : ""}`} /> {saved ? "Saved" : "Save provider"}</Button>
+          </div>
+          <p className="mt-4 text-xs leading-5 text-muted-warm">Payments, messaging and bookings arrive in the next phase. Nothing is charged today.</p>
+        </div>
+        <div className="rounded-3xl bg-sand p-6">
+          <ShieldCheck className="size-6 text-accent-green" />
+          <p className="mt-3 font-display text-lg font-semibold text-brand">Availability</p>
+          <p className="mt-1 text-sm leading-6 text-muted-warm">{provider.availability}. Response usually within a few hours.</p>
+        </div>
+      </aside>
+    </div>
+  </main></PublicLayout>;
+}
+
 
 export function HowItWorksPage() { return <PublicLayout><main className="page-shell py-12 md:py-20"><p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-deep">Simple by design</p><h1 className="mt-4 max-w-2xl font-display text-5xl font-semibold leading-[1.02] text-brand md:text-7xl">A better way to get good work done.</h1><div className="mt-12 grid gap-5 md:grid-cols-2"><Workflow title="For clients" intro="Find the right help without the runaround." steps={["Search for a service", "Find a professional", "Contact or request a service", "Get your job done", "Leave a review"]} /><Workflow title="For service providers" intro="Turn your skills into a profile clients can trust." steps={["Create an account", "Build your professional profile", "Add your services", "Receive client requests", "Grow your business"]} /></div></main></PublicLayout>; }
 function Workflow({ title, intro, steps }: { title: string; intro: string; steps: string[] }) { return <section className="rounded-3xl bg-primary-foreground p-6 ring-1 ring-sand-deep/70 md:p-8"><p className="text-xs font-bold uppercase tracking-[0.18em] text-amber">{title}</p><h2 className="mt-3 font-display text-3xl font-semibold text-brand">{intro}</h2><ol className="mt-8 space-y-5">{steps.map((step, index) => <li key={step} className="flex gap-4"><span className="grid size-8 shrink-0 place-items-center rounded-full bg-sand font-display font-semibold text-terracotta-deep">{index + 1}</span><span className="pt-1 text-sm font-semibold text-ink">{step}</span></li>)}</ol></section>; }
