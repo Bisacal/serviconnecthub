@@ -105,3 +105,72 @@ export const blogPosts: BlogPost[] = [
   { title: "What a verified provider profile should tell you", category: "Trust & safety", date: "May 05, 2026" },
   { title: "The Abuja neighbourhood guide to getting things done", category: "Local guide", date: "Apr 28, 2026" },
 ];
+// ---------------------------------------------------------------------------
+// Derived provider details (sample content until the database is connected)
+// ---------------------------------------------------------------------------
+
+export type ProviderReview = { author: string; rating: number; date: string; body: string };
+
+const portfolioPool = [bolaImage, emekaImage, tundeImage];
+
+export function providerPriceValue(provider: Provider) {
+  return Number(provider.price.replace(/[^0-9]/g, "")) || 0;
+}
+
+export function providerExperienceYears(provider: Provider) {
+  return Number(provider.experience.replace(/[^0-9]/g, "")) || 0;
+}
+
+export function providerBusinessName(provider: Provider) {
+  const first = provider.name.split(" ")[0] ?? provider.name;
+  return `${first}'s ${provider.subcategory} Services`;
+}
+
+export function providerBio(provider: Provider) {
+  return `${provider.name} is a ${provider.profession.toLowerCase()} based in ${provider.location}, with ${provider.experience} of hands-on work across homes, offices and small businesses. Known for clear pricing, tidy work and honest timelines, ${provider.name.split(" ")[0]} handles every job personally and explains the options before starting.`;
+}
+
+export function providerServices(provider: Provider) {
+  const category = getCategoryBySlug(provider.categorySlug);
+  const list = category ? category.subcategories.slice(0, 5) : [];
+  return list.includes(provider.subcategory) ? list : [provider.subcategory, ...list].slice(0, 5);
+}
+
+export function providerPortfolio(provider: Provider) {
+  const start = provider.name.length % portfolioPool.length;
+  return [0, 1, 2].map((offset) => ({
+    image: portfolioPool[(start + offset) % portfolioPool.length] as string,
+    label: `${provider.subcategory} project ${offset + 1}`,
+  }));
+}
+
+export function providerReviews(provider: Provider): ProviderReview[] {
+  const first = provider.name.split(" ")[0] ?? provider.name;
+  return [
+    { author: "Adaeze M.", rating: 5, date: "Aug 2026", body: `${first} arrived on time, explained the work clearly and finished neatly. Pricing matched the quote exactly.` },
+    { author: "Samuel O.", rating: 5, date: "Jul 2026", body: `Very professional. Good communication before and after the job — I would book again for any ${provider.subcategory.toLowerCase()} work.` },
+    { author: "Hauwa B.", rating: 4, date: "Jun 2026", body: `Solid work and fair price. Took a little longer than planned but the result was worth it.` },
+  ];
+}
+
+export const priceRanges = [
+  { label: "Any price", min: 0, max: Number.POSITIVE_INFINITY },
+  { label: "Under ₦7,000", min: 0, max: 6999 },
+  { label: "₦7,000 – ₦15,000", min: 7000, max: 15000 },
+  { label: "Above ₦15,000", min: 15001, max: Number.POSITIVE_INFINITY },
+];
+
+export const ratingFilters = [
+  { label: "Any rating", min: 0 },
+  { label: "4.5 and above", min: 4.5 },
+  { label: "4.8 and above", min: 4.8 },
+];
+
+export const experienceFilters = [
+  { label: "Any experience", min: 0 },
+  { label: "5+ years", min: 5 },
+  { label: "8+ years", min: 8 },
+  { label: "10+ years", min: 10 },
+];
+
+export const availabilityOptions = ["Any availability", ...Array.from(new Set(providers.map((p) => p.availability)))];
