@@ -41,6 +41,80 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      portfolio_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_path: string | null
+          provider_id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_path?: string | null
+          provider_id: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_path?: string | null
+          provider_id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_items_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -80,12 +154,20 @@ export type Database = {
       provider_profiles: {
         Row: {
           availability: string | null
+          avatar_url: string | null
+          bio: string | null
+          business_name: string | null
+          category_id: string | null
           created_at: string
+          headline: string | null
           id: string
           is_published: boolean
           is_verified: boolean
           location: string | null
           profession: string | null
+          public_name: string | null
+          rating_average: number
+          review_count: number
           starting_price: number | null
           updated_at: string
           user_id: string
@@ -93,12 +175,20 @@ export type Database = {
         }
         Insert: {
           availability?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          business_name?: string | null
+          category_id?: string | null
           created_at?: string
+          headline?: string | null
           id?: string
           is_published?: boolean
           is_verified?: boolean
           location?: string | null
           profession?: string | null
+          public_name?: string | null
+          rating_average?: number
+          review_count?: number
           starting_price?: number | null
           updated_at?: string
           user_id: string
@@ -106,18 +196,168 @@ export type Database = {
         }
         Update: {
           availability?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          business_name?: string | null
+          category_id?: string | null
           created_at?: string
+          headline?: string | null
           id?: string
           is_published?: boolean
           is_verified?: boolean
           location?: string | null
           profession?: string | null
+          public_name?: string | null
+          rating_average?: number
+          review_count?: number
           starting_price?: number | null
           updated_at?: string
           user_id?: string
           years_experience?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "provider_profiles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_services: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          price_from: number | null
+          price_unit: string | null
+          provider_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          price_from?: number | null
+          price_unit?: string | null
+          provider_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          price_from?: number | null
+          price_unit?: string | null
+          provider_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_services_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_services_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          client_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          is_hidden: boolean
+          provider_id: string
+          rating: number
+          request_id: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_hidden?: boolean
+          provider_id: string
+          rating: number
+          request_id: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_hidden?: boolean
+          provider_id?: string
+          rating?: number
+          request_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: true
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_providers: {
+        Row: {
+          created_at: string
+          id: string
+          provider_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          provider_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          provider_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_providers_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       service_categories: {
         Row: {
@@ -155,6 +395,66 @@ export type Database = {
         }
         Relationships: []
       }
+      service_requests: {
+        Row: {
+          budget: number | null
+          client_id: string
+          created_at: string
+          details: string | null
+          id: string
+          location: string | null
+          preferred_date: string | null
+          provider_id: string
+          service_id: string | null
+          status: Database["public"]["Enums"]["request_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          budget?: number | null
+          client_id: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          location?: string | null
+          preferred_date?: string | null
+          provider_id: string
+          service_id?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          budget?: number | null
+          client_id?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          location?: string | null
+          preferred_date?: string | null
+          provider_id?: string
+          service_id?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "provider_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -191,6 +491,13 @@ export type Database = {
     }
     Enums: {
       app_role: "client" | "provider" | "admin"
+      request_status:
+        | "pending"
+        | "accepted"
+        | "declined"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -319,6 +626,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["client", "provider", "admin"],
+      request_status: [
+        "pending",
+        "accepted",
+        "declined",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
     },
   },
 } as const
