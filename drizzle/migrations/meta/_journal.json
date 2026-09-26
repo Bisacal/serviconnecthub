@@ -15,6 +15,13 @@
       "when": 1790185057281,
       "tag": "0001_restrict_public_file_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790440065284,
+      "tag": "0002_core_schema_extensions",
+      "breakpoints": true
     }
   ]
 }
