@@ -16,26 +16,38 @@ export type Database = {
     Tables: {
       client_profiles: {
         Row: {
+          additional_info: string | null
+          address: string | null
+          city: string | null
           created_at: string
           id: string
           preferred_location: string | null
           service_notes: string | null
+          state: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          additional_info?: string | null
+          address?: string | null
+          city?: string | null
           created_at?: string
           id?: string
           preferred_location?: string | null
           service_notes?: string | null
+          state?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          additional_info?: string | null
+          address?: string | null
+          city?: string | null
           created_at?: string
           id?: string
           preferred_location?: string | null
           service_notes?: string | null
+          state?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -122,8 +134,11 @@ export type Database = {
           city: string | null
           created_at: string
           display_name: string | null
+          full_name: string | null
           id: string
           phone: string | null
+          profile_image: string | null
+          status: Database["public"]["Enums"]["account_status"]
           updated_at: string
           user_id: string
         }
@@ -133,8 +148,11 @@ export type Database = {
           city?: string | null
           created_at?: string
           display_name?: string | null
+          full_name?: string | null
           id?: string
           phone?: string | null
+          profile_image?: string | null
+          status?: Database["public"]["Enums"]["account_status"]
           updated_at?: string
           user_id: string
         }
@@ -144,8 +162,11 @@ export type Database = {
           city?: string | null
           created_at?: string
           display_name?: string | null
+          full_name?: string | null
           id?: string
           phone?: string | null
+          profile_image?: string | null
+          status?: Database["public"]["Enums"]["account_status"]
           updated_at?: string
           user_id?: string
         }
@@ -153,11 +174,15 @@ export type Database = {
       }
       provider_profiles: {
         Row: {
+          area: string | null
           availability: string | null
+          availability_status: Database["public"]["Enums"]["availability_status"]
           avatar_url: string | null
+          average_rating: number | null
           bio: string | null
           business_name: string | null
           category_id: string | null
+          city: string | null
           created_at: string
           headline: string | null
           id: string
@@ -169,16 +194,22 @@ export type Database = {
           rating_average: number
           review_count: number
           starting_price: number | null
+          state: string | null
           updated_at: string
           user_id: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
           years_experience: number | null
         }
         Insert: {
+          area?: string | null
           availability?: string | null
+          availability_status?: Database["public"]["Enums"]["availability_status"]
           avatar_url?: string | null
+          average_rating?: number | null
           bio?: string | null
           business_name?: string | null
           category_id?: string | null
+          city?: string | null
           created_at?: string
           headline?: string | null
           id?: string
@@ -190,16 +221,22 @@ export type Database = {
           rating_average?: number
           review_count?: number
           starting_price?: number | null
+          state?: string | null
           updated_at?: string
           user_id: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
           years_experience?: number | null
         }
         Update: {
+          area?: string | null
           availability?: string | null
+          availability_status?: Database["public"]["Enums"]["availability_status"]
           avatar_url?: string | null
+          average_rating?: number | null
           bio?: string | null
           business_name?: string | null
           category_id?: string | null
+          city?: string | null
           created_at?: string
           headline?: string | null
           id?: string
@@ -211,8 +248,10 @@ export type Database = {
           rating_average?: number
           review_count?: number
           starting_price?: number | null
+          state?: string | null
           updated_at?: string
           user_id?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
           years_experience?: number | null
         }
         Relationships: [
@@ -233,8 +272,10 @@ export type Database = {
           id: string
           is_active: boolean
           price_from: number | null
+          price_type: Database["public"]["Enums"]["price_type"]
           price_unit: string | null
           provider_id: string
+          subcategory_id: string | null
           title: string
           updated_at: string
         }
@@ -245,8 +286,10 @@ export type Database = {
           id?: string
           is_active?: boolean
           price_from?: number | null
+          price_type?: Database["public"]["Enums"]["price_type"]
           price_unit?: string | null
           provider_id: string
+          subcategory_id?: string | null
           title: string
           updated_at?: string
         }
@@ -257,8 +300,10 @@ export type Database = {
           id?: string
           is_active?: boolean
           price_from?: number | null
+          price_type?: Database["public"]["Enums"]["price_type"]
           price_unit?: string | null
           provider_id?: string
+          subcategory_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -275,6 +320,13 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_services_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "service_subcategories"
             referencedColumns: ["id"]
           },
         ]
@@ -455,6 +507,50 @@ export type Database = {
           },
         ]
       }
+      service_subcategories: {
+        Row: {
+          category_id: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_subcategories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -478,7 +574,47 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      provider_portfolios: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string | null
+          image_path: string | null
+          provider_id: string | null
+          sort_order: number | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          image_path?: string | null
+          provider_id?: string | null
+          sort_order?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          image_path?: string | null
+          provider_id?: string | null
+          sort_order?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_items_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
@@ -490,7 +626,10 @@ export type Database = {
       }
     }
     Enums: {
+      account_status: "active" | "suspended" | "deactivated"
       app_role: "client" | "provider" | "admin"
+      availability_status: "available" | "busy" | "unavailable"
+      price_type: "hourly" | "fixed" | "daily" | "negotiable" | "starting_from"
       request_status:
         | "pending"
         | "accepted"
@@ -498,6 +637,7 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      verification_status: "unverified" | "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -625,7 +765,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_status: ["active", "suspended", "deactivated"],
       app_role: ["client", "provider", "admin"],
+      availability_status: ["available", "busy", "unavailable"],
+      price_type: ["hourly", "fixed", "daily", "negotiable", "starting_from"],
       request_status: [
         "pending",
         "accepted",
@@ -634,6 +777,7 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      verification_status: ["unverified", "pending", "verified", "rejected"],
     },
   },
 } as const
