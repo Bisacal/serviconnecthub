@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Users can choose a client or provider role" ON public.user_roles;
