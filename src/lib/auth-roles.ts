@@ -23,30 +23,15 @@ export function getDashboardPath(role: AppRole): DashboardPath {
   return "/dashboard";
 }
 
-export async function createSignupRecords(userId: string, displayName: string, role: SignupRole) {
-  const { error: profileError } = await supabase.from("profiles").upsert(
-    { user_id: userId, display_name: displayName },
-    { onConflict: "user_id" },
-  );
-  if (profileError) throw profileError;
-
-  const { error: roleError } = await supabase.from("user_roles").upsert(
-    { user_id: userId, role },
-    { onConflict: "user_id,role" },
-  );
-  if (roleError) throw roleError;
-
-  if (role === "client") {
-    const { error } = await supabase.from("client_profiles").upsert(
-      { user_id: userId },
-      { onConflict: "user_id" },
-    );
-    if (error) throw error;
-  } else {
-    const { error } = await supabase.from("provider_profiles").upsert(
-      { user_id: userId },
-      { onConflict: "user_id" },
-    );
-    if (error) throw error;
+// Profile, role and workspace records are created by the database signup trigger.
+// The role is never written from the browser; admin can never be self-assigned.
+export async function waitForUserRole(userId: string): Promise<AppRole> {
+  for (let i = 0; i < 5; i++) {
+    const roles = await getUserRoles(userId);
+    if (roles.length) return getPrimaryRole(roles);
+    await new Promise((r) => setTimeout(r, 400));
   }
+  return "client";
 }
+
+export type { SignupRole as RequestedSignupRole };
