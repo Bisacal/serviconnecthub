@@ -51,7 +51,7 @@ import {
 } from "@/lib/marketplace-data";
 
 
-function Logo({ inverse = false }: { inverse?: boolean }) {
+export function Logo({ inverse = false }: { inverse?: boolean }) {
   return <Link to="/" className="flex items-center gap-2" aria-label="SERVICONNECT home"><span className="grid size-10 place-items-center rounded-full bg-terracotta font-display text-lg font-semibold leading-none text-primary-foreground">S</span><span><span className={`block font-display text-[20px] font-semibold tracking-tight ${inverse ? "text-primary-foreground" : "text-brand"}`}>Serviconnect</span><span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-terracotta-deep">Trusted pros</span></span></Link>;
 }
 
@@ -83,7 +83,7 @@ export function PublicFooter() {
 
 export function PublicLayout({ children }: { children: ReactNode }) { return <div className="min-h-screen bg-cream text-ink"><PublicHeader />{children}<PublicFooter /></div>; }
 
-function SearchPanel({ compact = false, idPrefix = "hero", initialService = "", initialLocation = "Abuja, FCT" }: { compact?: boolean; idPrefix?: string; initialService?: string; initialLocation?: string }) {
+export export function SearchPanel({ compact = false, idPrefix = "hero", initialService = "", initialLocation = "Abuja, FCT" }: { compact?: boolean; idPrefix?: string; initialService?: string; initialLocation?: string }) {
   const navigate = useNavigate();
   const [service, setService] = useState(initialService);
   const [location, setLocation] = useState(initialLocation);
