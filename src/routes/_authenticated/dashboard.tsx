@@ -4,7 +4,7 @@ import { getDashboardPath } from "@/lib/auth-roles";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   validateSearch: (search: Record<string, unknown>): { tab?: ClientTab } => {
-    const tab = search.tab;
+    const tab = search["tab"];
     return clientTabs.includes(tab as ClientTab) ? { tab: tab as ClientTab } : {};
   },
   beforeLoad: ({ context }) => {

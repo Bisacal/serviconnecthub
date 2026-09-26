@@ -82,7 +82,7 @@ function useRequests(userId: string) {
 export function ClientDashboard({ tab }: { tab: ClientTab }) {
   const { user, signOut } = useAuth();
   if (!user) return null;
-  const current = nav.find((n) => n.tab === tab) ?? nav[0];
+  const current = nav.find((n) => n.tab === tab) ?? nav[0]!;
 
   return (
     <div className="min-h-screen bg-cream text-ink">
@@ -210,7 +210,7 @@ function Overview({ userId }: { userId: string }) {
   );
 }
 
-function StatCard({ label, value, icon }: { label: string; value?: number; icon: ReactNode }) {
+function StatCard({ label, value, icon }: { label: string; value: number | undefined; icon: ReactNode }) {
   return (
     <Card className="flex items-center justify-between">
       <div><p className="text-sm text-muted-warm">{label}</p><p className="mt-1 font-display text-3xl font-semibold text-brand">{value ?? "–"}</p></div>

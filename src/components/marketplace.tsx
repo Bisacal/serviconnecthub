@@ -83,7 +83,7 @@ export function PublicFooter() {
 
 export function PublicLayout({ children }: { children: ReactNode }) { return <div className="min-h-screen bg-cream text-ink"><PublicHeader />{children}<PublicFooter /></div>; }
 
-export export function SearchPanel({ compact = false, idPrefix = "hero", initialService = "", initialLocation = "Abuja, FCT" }: { compact?: boolean; idPrefix?: string; initialService?: string; initialLocation?: string }) {
+export function SearchPanel({ compact = false, idPrefix = "hero", initialService = "", initialLocation = "Abuja, FCT" }: { compact?: boolean; idPrefix?: string; initialService?: string; initialLocation?: string }) {
   const navigate = useNavigate();
   const [service, setService] = useState(initialService);
   const [location, setLocation] = useState(initialLocation);
