@@ -361,7 +361,7 @@ function CategoriesPanel() {
 
   return (
     <div className="space-y-4">
-      <form className={`${card} grid gap-3 md:grid-cols-[1fr_2fr_auto]`} onSubmit={(e) => { e.preventDefault(); if (name.trim().length < 2) return toast.error("Enter a category name"); addCat.mutate(); }}>
+      <form className={`${card} grid gap-3 md:grid-cols-[1fr_2fr_auto]`} onSubmit={(e) => { e.preventDefault(); if (name.trim().length < 2) { toast.error("Enter a category name"); return; } addCat.mutate(); }}>
         <Input placeholder="New category name" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} />
         <Input placeholder="Short description (optional)" value={description} maxLength={200} onChange={(e) => setDescription(e.target.value)} />
         <Button type="submit" variant="terracotta" disabled={addCat.isPending}>Add category</Button>
