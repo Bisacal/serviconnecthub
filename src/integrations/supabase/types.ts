@@ -456,6 +456,7 @@ export type Database = {
           id: string
           location: string | null
           preferred_date: string | null
+          preferred_time: string | null
           provider_id: string
           service_id: string | null
           status: Database["public"]["Enums"]["request_status"]
@@ -470,6 +471,7 @@ export type Database = {
           id?: string
           location?: string | null
           preferred_date?: string | null
+          preferred_time?: string | null
           provider_id: string
           service_id?: string | null
           status?: Database["public"]["Enums"]["request_status"]
@@ -484,6 +486,7 @@ export type Database = {
           id?: string
           location?: string | null
           preferred_date?: string | null
+          preferred_time?: string | null
           provider_id?: string
           service_id?: string | null
           status?: Database["public"]["Enums"]["request_status"]
