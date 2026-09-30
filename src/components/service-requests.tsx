@@ -85,9 +85,9 @@ export function RequestServiceDialog({ providerId, providerName, open, onOpenCha
         ) : (
           <form className="grid gap-4" onSubmit={(e) => {
             e.preventDefault();
-            if (!form.service_id && !form.title.trim()) return toast.error("Choose a service or give the job a title");
-            if (form.details.trim().length < 10) return toast.error("Please describe the job (at least 10 characters)");
-            if (!form.location.trim()) return toast.error("Please enter the job location");
+            if (!form.service_id && !form.title.trim()) { toast.error("Choose a service or give the job a title"); return; }
+            if (form.details.trim().length < 10) { toast.error("Please describe the job (at least 10 characters)"); return; }
+            if (!form.location.trim()) { toast.error("Please enter the job location"); return; }
             submit.mutate();
           }}>
             <div className="grid gap-1.5">
@@ -160,7 +160,7 @@ export function LiveProviderProfile({ id }: { id: string }) {
 
 type Row = Database["public"]["Tables"]["service_requests"]["Row"] & { provider?: { public_name: string | null; business_name: string | null } | null };
 
-function RequestCard({ r, who, actions }: { r: Row; who?: string; actions?: React.ReactNode }) {
+function RequestCard({ r, who, actions }: { r: Row; who?: string | undefined; actions?: React.ReactNode }) {
   return (
     <li className="rounded-2xl bg-cream p-4 ring-1 ring-sand-deep">
       <div className="flex flex-wrap items-start justify-between gap-2">
