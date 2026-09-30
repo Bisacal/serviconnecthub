@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { useAuth } from "@/components/auth-provider";
 import { ProviderRequests } from "@/components/service-requests";
+import { ProviderReviews } from "@/components/reviews";
 import { Logo } from "@/components/marketplace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -171,7 +172,7 @@ export function ProviderDashboard({ tab }: { tab: ProviderTab }) {
               {tab === "bookings" && <Placeholder title="Bookings are coming soon" text="Your confirmed jobs and schedule will appear here." />}
               {tab === "messages" && <Placeholder title="Messaging is coming soon" text="You'll be able to chat with clients directly." />}
               {tab === "earnings" && <Placeholder title="Earnings are coming soon" text="Payouts and income summaries will be added with payments." />}
-              {tab === "reviews" && <Placeholder title="Reviews are coming soon" text="Client reviews of your completed jobs will be listed here." />}
+              {tab === "reviews" && <ProviderReviews providerId={p.id} />}
               {tab === "subscription" && <Placeholder title="Subscriptions are coming soon" text="Premium listing plans will be available in a later phase." />}
               {tab === "notifications" && <Placeholder title="Notifications" text="Alerts about new requests and reviews will appear here." />}
             </>}

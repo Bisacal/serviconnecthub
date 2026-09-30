@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/auth-provider";
 import { Logo, SearchPanel } from "@/components/marketplace";
 import { ClientRequests } from "@/components/service-requests";
+import { ClientReviews } from "@/components/reviews";
 import { categories } from "@/lib/marketplace-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,7 +131,7 @@ export function ClientDashboard({ tab }: { tab: ClientTab }) {
             {tab === "requests" && <Card><ClientRequests userId={user.id} /></Card>}
             {tab === "bookings" && <Placeholder title="Bookings are coming soon" text="Confirmed jobs and upcoming appointments will appear here." />}
             {tab === "messages" && <Placeholder title="Messaging is coming soon" text="You'll be able to chat with providers directly. For now, use the contact button on a provider's profile." />}
-            {tab === "reviews" && <Placeholder title="Reviews are coming soon" text="After a job is completed, you'll be able to rate and review the provider here." />}
+            {tab === "reviews" && <Card><ClientReviews userId={user.id} /></Card>}
             {tab === "payments" && <Placeholder title="Payments are not available yet" text="Secure payments will be added in a later phase. Please agree payment directly with your provider for now." />}
           </div>
         </section>

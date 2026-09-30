@@ -338,9 +338,11 @@ export type Database = {
           created_at: string
           id: string
           is_hidden: boolean
+          moderation_note: string | null
           provider_id: string
           rating: number
           request_id: string
+          reviewer_name: string | null
           updated_at: string
         }
         Insert: {
@@ -349,9 +351,11 @@ export type Database = {
           created_at?: string
           id?: string
           is_hidden?: boolean
+          moderation_note?: string | null
           provider_id: string
           rating: number
           request_id: string
+          reviewer_name?: string | null
           updated_at?: string
         }
         Update: {
@@ -360,9 +364,11 @@ export type Database = {
           created_at?: string
           id?: string
           is_hidden?: boolean
+          moderation_note?: string | null
           provider_id?: string
           rating?: number
           request_id?: string
+          reviewer_name?: string | null
           updated_at?: string
         }
         Relationships: [
