@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { PublicReviews, ReviewButton } from "@/components/reviews";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type Status = Database["public"]["Enums"]["request_status"];
@@ -146,6 +147,7 @@ export function LiveProviderProfile({ id }: { id: string }) {
             <span className="capitalize">{p.availability_status}</span>
           </div>
           {p.bio && <p className="mt-6 whitespace-pre-line text-ink">{p.bio}</p>}
+          <PublicReviews providerId={p.id} />
         </section>
         <aside className="h-fit rounded-3xl bg-primary-foreground p-6 ring-1 ring-sand-deep">
           <Button variant="brand" size="lg" className="w-full rounded-full" onClick={() => setOpen(true)}><CalendarCheck className="size-4" /> Send service request</Button>
@@ -208,7 +210,7 @@ export function ClientRequests({ userId }: { userId: string }) {
     <ul className="grid gap-3">
       {q.data.map((r) => (
         <RequestCard key={r.id} r={r} who={r.provider ? `To ${r.provider.public_name || r.provider.business_name || "provider"}` : undefined}
-          actions={(r.status === "pending" || r.status === "accepted") && (
+          actions={r.status === "completed" ? <ReviewButton requestId={r.id} providerId={r.provider_id} userId={userId} /> : (r.status === "pending" || r.status === "accepted") && (
             <Button size="sm" variant="outline" className="rounded-full" disabled={change.isPending} onClick={() => { if (confirm("Cancel this request?")) change.mutate({ id: r.id, status: "cancelled" }); }}>Cancel request</Button>
           )} />
       ))}
