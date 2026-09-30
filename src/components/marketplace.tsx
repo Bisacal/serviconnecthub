@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
+import { LiveProviderProfile } from "@/components/service-requests";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -228,7 +229,7 @@ function RatingStars({ value }: { value: number }) {
 export function ProviderProfilePage({ id }: { id: string }) {
   const provider = providers.find((item) => item.id === id);
   const [saved, setSaved] = useState(false);
-  if (provider === undefined) return <PublicLayout><main className="page-shell py-20 text-center"><h1 className="font-display text-4xl font-semibold text-brand">Provider not found</h1><p className="mt-3 text-sm text-muted-warm">This profile is not available.</p><Button asChild variant="terracotta" className="mt-6 rounded-full"><Link to="/directory" search={{ service: "", location: "Abuja, FCT" }}>Back to directory <ArrowRight /></Link></Button></main></PublicLayout>;
+  if (provider === undefined) return <LiveProviderProfile id={id} />;
 
   const category = getCategoryBySlug(provider.categorySlug);
   const reviews = providerReviews(provider);
@@ -291,7 +292,7 @@ export function ProviderProfilePage({ id }: { id: string }) {
           <p className="mt-3 text-sm leading-6 text-muted-warm">Starting from <span className="font-semibold text-brand">{provider.price}</span> · {provider.availability}</p>
           <div className="mt-6 space-y-3">
             <Button variant="terracotta" size="lg" className="w-full rounded-full" onClick={() => toast.success("Contact request noted", { description: `Messaging with ${provider.name} opens once bookings go live.` })}><MessageCircle className="size-4" /> Contact provider</Button>
-            <Button variant="brand" size="lg" className="w-full rounded-full" onClick={() => toast.success("Service request started", { description: "You'll be able to submit full job details in the next phase." })}><CalendarCheck className="size-4" /> Send service request</Button>
+            <Button variant="brand" size="lg" className="w-full rounded-full" onClick={() => toast.info("This is a sample profile", { description: "Service requests can be sent to registered providers listed on SERVICONNECT." })}><CalendarCheck className="size-4" /> Send service request</Button>
             <Button variant="outline" size="lg" className="w-full rounded-full" onClick={toggleSaved} aria-pressed={saved}><Heart className={`size-4 ${saved ? "fill-current text-terracotta" : ""}`} /> {saved ? "Saved" : "Save provider"}</Button>
           </div>
           <p className="mt-4 text-xs leading-5 text-muted-warm">Payments, messaging and bookings arrive in the next phase. Nothing is charged today.</p>
