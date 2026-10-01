@@ -119,6 +119,91 @@ export type Database = {
         }
         Relationships: []
       }
+      conversations: {
+        Row: {
+          client_id: string
+          client_last_read_at: string
+          created_at: string
+          id: string
+          last_message_at: string | null
+          provider_id: string
+          provider_last_read_at: string
+          provider_user_id: string
+        }
+        Insert: {
+          client_id: string
+          client_last_read_at?: string
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          provider_id: string
+          provider_last_read_at?: string
+          provider_user_id: string
+        }
+        Update: {
+          client_id?: string
+          client_last_read_at?: string
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          provider_id?: string
+          provider_last_read_at?: string
+          provider_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          attachment_mime: string | null
+          attachment_name: string | null
+          attachment_path: string | null
+          body: string | null
+          conversation_id: string
+          created_at: string
+          id: string
+          kind: string
+          sender_id: string
+        }
+        Insert: {
+          attachment_mime?: string | null
+          attachment_name?: string | null
+          attachment_path?: string | null
+          body?: string | null
+          conversation_id: string
+          created_at?: string
+          id?: string
+          kind?: string
+          sender_id: string
+        }
+        Update: {
+          attachment_mime?: string | null
+          attachment_name?: string | null
+          attachment_path?: string | null
+          body?: string | null
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           body: string | null
@@ -790,6 +875,25 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      mark_conversation_read: {
+        Args: { _conversation_id: string }
+        Returns: undefined
+      }
+      my_conversations: {
+        Args: never
+        Returns: {
+          id: string
+          is_client: boolean
+          last_body: string
+          last_message_at: string
+          other_name: string
+          unread: number
+        }[]
+      }
+      start_conversation: {
+        Args: { _client_id: string; _provider_id: string }
+        Returns: string
       }
     }
     Enums: {
