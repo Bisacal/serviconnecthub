@@ -39,11 +39,11 @@ function useDocuments(providerId: string | null) {
 
 async function openDoc(path: string) {
   const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 120);
-  if (error || !data) return toast.error("Couldn't open the document");
+  if (error || !data) { toast.error("Could not open the document"); return; }
   window.open(data.signedUrl, "_blank", "noopener");
 }
 
-function DocList({ docs, onRemove }: { docs: Database["public"]["Tables"]["verification_documents"]["Row"][]; onRemove?: (d: { id: string; file_path: string }) => void }) {
+function DocList({ docs, onRemove }: { docs: Database["public"]["Tables"]["verification_documents"]["Row"][]; onRemove?: ((d: { id: string; file_path: string }) => void) | undefined }) {
   if (!docs.length) return <p className="text-sm text-muted-warm">No documents uploaded yet.</p>;
   return (
     <ul className="space-y-2">
