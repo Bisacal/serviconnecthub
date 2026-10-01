@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Inbox, UnreadBadge } from "@/components/messages";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -120,8 +121,9 @@ function useCategories() {
 
 /* ---------- shell ---------- */
 
-export function ProviderDashboard({ tab }: { tab: ProviderTab }) {
+export function ProviderDashboard({ tab, conversation }: { tab: ProviderTab; conversation?: string | undefined }) {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const provider = useProvider(user?.id ?? "");
   if (!user) return null;
   const current = nav.find((n) => n.tab === tab) ?? nav[0]!;
@@ -151,7 +153,7 @@ export function ProviderDashboard({ tab }: { tab: ProviderTab }) {
               <Link key={item.tab} to="/provider-dashboard" search={{ tab: item.tab }}
                 aria-current={item.tab === tab ? "page" : undefined}
                 className={`flex shrink-0 items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold ${item.tab === tab ? "bg-sand text-brand" : "text-muted-warm hover:bg-cream hover:text-brand"}`}>
-                {item.icon}{item.label}
+                {item.icon}{item.label}{item.tab === "messages" && <UnreadBadge />}
               </Link>
             ))}
           </nav>
@@ -172,7 +174,7 @@ export function ProviderDashboard({ tab }: { tab: ProviderTab }) {
               {tab === "verification" && <ProviderVerification provider={p} />}
               {tab === "requests" && <ProviderRequests providerId={p.id} />}
               {tab === "bookings" && <ProviderBookings providerId={p.id} />}
-              {tab === "messages" && <Placeholder title="Messaging is coming soon" text="You'll be able to chat with clients directly." />}
+              {tab === "messages" && <Inbox userId={user.id} selected={conversation} onSelect={(id) => void navigate({ to: "/provider-dashboard", search: { tab: "messages", c: id } })} />}
               {tab === "earnings" && <Placeholder title="Earnings are coming soon" text="Payouts and income summaries will be added with payments." />}
               {tab === "reviews" && <ProviderReviews providerId={p.id} />}
               {tab === "subscription" && <Placeholder title="Subscriptions are coming soon" text="Premium listing plans will be available in a later phase." />}

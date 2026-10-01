@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { MessageButton } from "@/components/messages";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type BStatus = Database["public"]["Enums"]["booking_status"];
@@ -231,8 +232,8 @@ export function ClientBookings({ userId }: { userId: string }) {
     <ul className="grid gap-3">
       {q.data.map((b) => (
         <BookingCard key={b.id} b={b} who={b.provider ? `With ${b.provider.public_name || b.provider.business_name || "provider"}` : undefined}
-          actions={isUpcoming(b) && <Button size="sm" variant="outline" className="rounded-full" disabled={update.isPending}
-            onClick={() => { if (confirm("Cancel this booking?")) update.mutate({ id: b.id, status: "cancelled" }); }}>Cancel booking</Button>} />
+          actions={<><MessageButton clientId={userId} providerId={b.provider_id} dashboard="/dashboard" />{isUpcoming(b) && <Button size="sm" variant="outline" className="rounded-full" disabled={update.isPending}
+            onClick={() => { if (confirm("Cancel this booking?")) update.mutate({ id: b.id, status: "cancelled" }); }}>Cancel booking</Button>}</>} />
       ))}
     </ul>
   );
@@ -268,7 +269,7 @@ export function ProviderBookings({ providerId }: { providerId: string }) {
       ) : (
         <ul className="grid gap-3">
           {rows.map((b) => (
-            <BookingCard key={b.id} b={b} actions={<>
+            <BookingCard key={b.id} b={b} actions={<><MessageButton clientId={b.client_id} providerId={b.provider_id} dashboard="/provider-dashboard" />
               {b.status === "pending" && <>
                 <Button size="sm" className="rounded-full" disabled={update.isPending} onClick={() => act(b, "confirmed")}>Accept</Button>
                 <Button size="sm" variant="outline" className="rounded-full" disabled={update.isPending} onClick={() => act(b, "declined")}>Decline</Button>

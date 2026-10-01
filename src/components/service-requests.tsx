@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PublicReviews, ReviewButton } from "@/components/reviews";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BookingDialog } from "@/components/bookings";
+import { MessageButton } from "@/components/messages";
 
 type Status = Database["public"]["Enums"]["request_status"];
 
@@ -214,9 +215,9 @@ export function ClientRequests({ userId }: { userId: string }) {
     <ul className="grid gap-3">
       {q.data.map((r) => (
         <RequestCard key={r.id} r={r} who={r.provider ? `To ${r.provider.public_name || r.provider.business_name || "provider"}` : undefined}
-          actions={r.status === "completed" ? <ReviewButton requestId={r.id} providerId={r.provider_id} userId={userId} /> : (r.status === "pending" || r.status === "accepted") && (
+          actions={<><MessageButton clientId={userId} providerId={r.provider_id} dashboard="/dashboard" />{r.status === "completed" ? <ReviewButton requestId={r.id} providerId={r.provider_id} userId={userId} /> : (r.status === "pending" || r.status === "accepted") && (
             <Button size="sm" variant="outline" className="rounded-full" disabled={change.isPending} onClick={() => { if (confirm("Cancel this request?")) change.mutate({ id: r.id, status: "cancelled" }); }}>Cancel request</Button>
-          )} />
+          )}</>} />
       ))}
     </ul>
   );
@@ -251,9 +252,9 @@ export function ProviderRequests({ providerId }: { providerId: string }) {
       ) : (
         <ul className="grid gap-3">
           {rows.map((r) => (
-            <RequestCard key={r.id} r={r} actions={next[r.status]?.map((a) => (
+            <RequestCard key={r.id} r={r} actions={<><MessageButton clientId={r.client_id} providerId={r.provider_id} dashboard="/provider-dashboard" />{next[r.status]?.map((a) => (
               <Button key={a.status} size="sm" variant={a.variant ?? "default"} className="rounded-full" disabled={change.isPending} onClick={() => change.mutate({ id: r.id, status: a.status })}>{a.label}</Button>
-            ))} />
+            ))}</>} />
           ))}
         </ul>
       )}
