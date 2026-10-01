@@ -50,6 +50,13 @@
       "when": 1790849592324,
       "tag": "0006_verification_documents",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790865084445,
+      "tag": "0007_bookings_system",
+      "breakpoints": true
     }
   ]
 }

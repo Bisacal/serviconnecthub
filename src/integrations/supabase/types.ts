@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          booking_date: string
+          client_id: string
+          created_at: string
+          details: Json
+          end_time: string
+          id: string
+          location: string | null
+          notes: string | null
+          provider_id: string
+          provider_note: string | null
+          service_id: string | null
+          start_time: string
+          status: Database["public"]["Enums"]["booking_status"]
+          updated_at: string
+        }
+        Insert: {
+          booking_date: string
+          client_id: string
+          created_at?: string
+          details?: Json
+          end_time: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          provider_id: string
+          provider_note?: string | null
+          service_id?: string | null
+          start_time: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+        }
+        Update: {
+          booking_date?: string
+          client_id?: string
+          created_at?: string
+          details?: Json
+          end_time?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          provider_id?: string
+          provider_note?: string | null
+          service_id?: string | null
+          start_time?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "provider_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_profiles: {
         Row: {
           additional_info: string | null
@@ -172,6 +238,41 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_availability: {
+        Row: {
+          created_at: string
+          end_time: string
+          id: string
+          provider_id: string
+          start_time: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          end_time: string
+          id?: string
+          provider_id: string
+          start_time: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          id?: string
+          provider_id?: string
+          start_time?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_availability_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_profiles: {
         Row: {
           area: string | null
@@ -269,12 +370,14 @@ export type Database = {
           category_id: string | null
           created_at: string
           description: string | null
+          duration_minutes: number
           id: string
           is_active: boolean
           price_from: number | null
           price_type: Database["public"]["Enums"]["price_type"]
           price_unit: string | null
           provider_id: string
+          requires_booking: boolean
           subcategory_id: string | null
           title: string
           updated_at: string
@@ -283,12 +386,14 @@ export type Database = {
           category_id?: string | null
           created_at?: string
           description?: string | null
+          duration_minutes?: number
           id?: string
           is_active?: boolean
           price_from?: number | null
           price_type?: Database["public"]["Enums"]["price_type"]
           price_unit?: string | null
           provider_id: string
+          requires_booking?: boolean
           subcategory_id?: string | null
           title: string
           updated_at?: string
@@ -297,12 +402,14 @@ export type Database = {
           category_id?: string | null
           created_at?: string
           description?: string | null
+          duration_minutes?: number
           id?: string
           is_active?: boolean
           price_from?: number | null
           price_type?: Database["public"]["Enums"]["price_type"]
           price_unit?: string | null
           provider_id?: string
+          requires_booking?: boolean
           subcategory_id?: string | null
           title?: string
           updated_at?: string
@@ -670,6 +777,13 @@ export type Database = {
       }
     }
     Functions: {
+      get_provider_busy_slots: {
+        Args: { _date: string; _provider_id: string }
+        Returns: {
+          end_time: string
+          start_time: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -682,6 +796,12 @@ export type Database = {
       account_status: "active" | "suspended" | "deactivated"
       app_role: "client" | "provider" | "admin"
       availability_status: "available" | "busy" | "unavailable"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "declined"
+        | "cancelled"
+        | "completed"
       price_type: "hourly" | "fixed" | "daily" | "negotiable" | "starting_from"
       request_status:
         | "pending"
@@ -826,6 +946,13 @@ export const Constants = {
       account_status: ["active", "suspended", "deactivated"],
       app_role: ["client", "provider", "admin"],
       availability_status: ["available", "busy", "unavailable"],
+      booking_status: [
+        "pending",
+        "confirmed",
+        "declined",
+        "cancelled",
+        "completed",
+      ],
       price_type: ["hourly", "fixed", "daily", "negotiable", "starting_from"],
       request_status: [
         "pending",
