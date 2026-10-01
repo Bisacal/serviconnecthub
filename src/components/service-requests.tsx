@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PublicReviews, ReviewButton } from "@/components/reviews";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { BookingDialog } from "@/components/bookings";
 
 type Status = Database["public"]["Enums"]["request_status"];
 
@@ -117,6 +118,7 @@ export function RequestServiceDialog({ providerId, providerName, open, onOpenCha
 
 export function LiveProviderProfile({ id }: { id: string }) {
   const [open, setOpen] = useState(false);
+  const [bookOpen, setBookOpen] = useState(false);
   const isUuid = /^[0-9a-f-]{36}$/i.test(id);
   const q = useQuery({
     queryKey: ["public-provider", id],
@@ -149,11 +151,13 @@ export function LiveProviderProfile({ id }: { id: string }) {
           {p.bio && <p className="mt-6 whitespace-pre-line text-ink">{p.bio}</p>}
           <PublicReviews providerId={p.id} />
         </section>
-        <aside className="h-fit rounded-3xl bg-primary-foreground p-6 ring-1 ring-sand-deep">
-          <Button variant="brand" size="lg" className="w-full rounded-full" onClick={() => setOpen(true)}><CalendarCheck className="size-4" /> Send service request</Button>
+        <aside className="grid h-fit gap-3 rounded-3xl bg-primary-foreground p-6 ring-1 ring-sand-deep">
+          <Button variant="brand" size="lg" className="w-full rounded-full" onClick={() => setBookOpen(true)}><Clock className="size-4" /> Book appointment</Button>
+          <Button variant="outline" size="lg" className="w-full rounded-full" onClick={() => setOpen(true)}><CalendarCheck className="size-4" /> Send service request</Button>
         </aside>
       </main>
       <RequestServiceDialog providerId={p.id} providerName={name} open={open} onOpenChange={setOpen} />
+      <BookingDialog providerId={p.id} providerName={name} open={bookOpen} onOpenChange={setBookOpen} />
     </PublicLayout>
   );
 }

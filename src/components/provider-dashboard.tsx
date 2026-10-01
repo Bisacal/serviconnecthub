@@ -13,6 +13,7 @@ import { useAuth } from "@/components/auth-provider";
 import { ProviderRequests } from "@/components/service-requests";
 import { ProviderReviews } from "@/components/reviews";
 import { ProviderVerification } from "@/components/verification";
+import { ProviderBookings, WeeklySchedule } from "@/components/bookings";
 import { Logo } from "@/components/marketplace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -166,11 +167,11 @@ export function ProviderDashboard({ tab }: { tab: ProviderTab }) {
               {tab === "profile" && <ProfessionalProfile provider={p} />}
               {tab === "services" && <Services providerId={p.id} />}
               {tab === "portfolio" && <Portfolio providerId={p.id} userId={user.id} />}
-              {tab === "availability" && <AvailabilityPanel provider={p} />}
+              {tab === "availability" && <><AvailabilityPanel provider={p} /><div className="mt-6"><WeeklySchedule providerId={p.id} /></div></>}
               {tab === "settings" && <AccountSettings userId={user.id} email={user.email ?? ""} />}
               {tab === "verification" && <ProviderVerification provider={p} />}
               {tab === "requests" && <ProviderRequests providerId={p.id} />}
-              {tab === "bookings" && <Placeholder title="Bookings are coming soon" text="Your confirmed jobs and schedule will appear here." />}
+              {tab === "bookings" && <ProviderBookings providerId={p.id} />}
               {tab === "messages" && <Placeholder title="Messaging is coming soon" text="You'll be able to chat with clients directly." />}
               {tab === "earnings" && <Placeholder title="Earnings are coming soon" text="Payouts and income summaries will be added with payments." />}
               {tab === "reviews" && <ProviderReviews providerId={p.id} />}
@@ -351,8 +352,8 @@ function Field({ id, label, children }: { id: string; label: string; children: R
 
 /* ---------- services ---------- */
 
-type ServiceForm = { id?: string; title: string; description: string; category_id: string; subcategory_id: string; price_from: string; price_type: PriceType; is_active: boolean };
-const emptyService: ServiceForm = { title: "", description: "", category_id: "", subcategory_id: "", price_from: "", price_type: "starting_from", is_active: true };
+type ServiceForm = { id?: string; title: string; description: string; category_id: string; subcategory_id: string; price_from: string; price_type: PriceType; is_active: boolean; requires_booking: boolean; duration_minutes: string };
+const emptyService: ServiceForm = { title: "", description: "", category_id: "", subcategory_id: "", price_from: "", price_type: "starting_from", is_active: true, requires_booking: false, duration_minutes: "60" };
 
 function Services({ providerId }: { providerId: string }) {
   const qc = useQueryClient();
@@ -369,6 +370,7 @@ function Services({ providerId }: { providerId: string }) {
       const row = {
         provider_id: providerId, title: s.title.trim().slice(0, 120), description: s.description.trim().slice(0, 1000) || null,
         category_id: s.category_id || null, subcategory_id: s.subcategory_id || null, price_from: price, price_type: s.price_type, is_active: s.is_active,
+        requires_booking: s.requires_booking, duration_minutes: Math.min(1440, Math.max(15, Number(s.duration_minutes) || 60)),
       };
       const { error } = s.id ? await supabase.from("provider_services").update(row).eq("id", s.id) : await supabase.from("provider_services").insert(row);
       if (error) throw error;
@@ -413,6 +415,12 @@ function Services({ providerId }: { providerId: string }) {
           <label className="flex items-center gap-3 text-sm font-semibold">
             <input type="checkbox" className="size-4" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} /> Active (visible to clients)
           </label>
+          <label className="flex items-center gap-3 text-sm font-semibold">
+            <input type="checkbox" className="size-4" checked={form.requires_booking} onChange={(e) => setForm({ ...form, requires_booking: e.target.checked })} /> Bookable by appointment
+          </label>
+          {form.requires_booking && <Field id="s-dur" label="Appointment length (minutes)">
+            <Input id="s-dur" type="number" min={15} max={1440} step={15} value={form.duration_minutes} onChange={(e) => setForm({ ...form, duration_minutes: e.target.value })} />
+          </Field>}
           <div className="flex gap-2 sm:col-span-2">
             <Button type="submit" className="rounded-full" disabled={save.isPending}>{save.isPending ? "Saving…" : "Save service"}</Button>
             <Button type="button" variant="outline" className="rounded-full" onClick={() => setForm(null)}>Cancel</Button>
@@ -437,6 +445,7 @@ function Services({ providerId }: { providerId: string }) {
               <Button size="sm" variant="outline" className="rounded-full" onClick={() => setForm({
                 id: s.id, title: s.title, description: s.description ?? "", category_id: s.category_id ?? "", subcategory_id: s.subcategory_id ?? "",
                 price_from: s.price_from?.toString() ?? "", price_type: s.price_type, is_active: s.is_active,
+                requires_booking: s.requires_booking, duration_minutes: String(s.duration_minutes),
               })}><Pencil /> Edit</Button>
               <Button size="sm" variant="ghost" className="rounded-full text-destructive" disabled={remove.isPending}
                 onClick={() => { if (confirm(`Delete "${s.title}"?`)) remove.mutate(s.id); }}><Trash2 /> Delete</Button>
