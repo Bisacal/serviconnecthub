@@ -3,9 +3,10 @@ import { ProviderDashboard, providerTabs, type ProviderTab } from "@/components/
 import { getDashboardPath } from "@/lib/auth-roles";
 
 export const Route = createFileRoute("/_authenticated/provider-dashboard")({
-  validateSearch: (search: Record<string, unknown>): { tab?: ProviderTab } => {
+  validateSearch: (search: Record<string, unknown>): { tab?: ProviderTab; c?: string } => {
     const tab = search["tab"];
-    return providerTabs.includes(tab as ProviderTab) ? { tab: tab as ProviderTab } : {};
+    const c = typeof search["c"] === "string" && /^[0-9a-f-]{36}$/i.test(search["c"] as string) ? (search["c"] as string) : undefined;
+    return { ...(providerTabs.includes(tab as ProviderTab) ? { tab: tab as ProviderTab } : {}), ...(c ? { c } : {}) };
   },
   beforeLoad: ({ context }) => {
     if (context.primaryRole !== "provider") throw redirect({ to: getDashboardPath(context.primaryRole) });
@@ -15,6 +16,6 @@ export const Route = createFileRoute("/_authenticated/provider-dashboard")({
 });
 
 function ProviderDashboardRoute() {
-  const { tab } = Route.useSearch();
-  return <ProviderDashboard tab={tab ?? "overview"} />;
+  const { tab, c } = Route.useSearch();
+  return <ProviderDashboard tab={tab ?? "overview"} conversation={c} />;
 }

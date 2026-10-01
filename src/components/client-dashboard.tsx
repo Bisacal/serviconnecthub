@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Inbox, UnreadBadge } from "@/components/messages";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -82,8 +83,9 @@ function useRequests(userId: string) {
 
 /* ---------- shell ---------- */
 
-export function ClientDashboard({ tab }: { tab: ClientTab }) {
+export function ClientDashboard({ tab, conversation }: { tab: ClientTab; conversation?: string | undefined }) {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   if (!user) return null;
   const current = nav.find((n) => n.tab === tab) ?? nav[0]!;
 
@@ -115,7 +117,7 @@ export function ClientDashboard({ tab }: { tab: ClientTab }) {
                 aria-current={item.tab === tab ? "page" : undefined}
                 className={`flex shrink-0 items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold ${item.tab === tab ? "bg-sand text-brand" : "text-muted-warm hover:bg-cream hover:text-brand"}`}
               >
-                {item.icon}{item.label}
+                {item.icon}{item.label}{item.tab === "messages" && <UnreadBadge />}
               </Link>
             ))}
           </nav>
@@ -131,7 +133,7 @@ export function ClientDashboard({ tab }: { tab: ClientTab }) {
             {tab === "settings" && <ProfileSettings userId={user.id} email={user.email ?? ""} />}
             {tab === "requests" && <Card><ClientRequests userId={user.id} /></Card>}
             {tab === "bookings" && <Card><ClientBookings userId={user.id} /></Card>}
-            {tab === "messages" && <Placeholder title="Messaging is coming soon" text="You'll be able to chat with providers directly. For now, use the contact button on a provider's profile." />}
+            {tab === "messages" && <Inbox userId={user.id} selected={conversation} onSelect={(id) => void navigate({ to: "/dashboard", search: { tab: "messages", c: id } })} />}
             {tab === "reviews" && <Card><ClientReviews userId={user.id} /></Card>}
             {tab === "payments" && <Placeholder title="Payments are not available yet" text="Secure payments will be added in a later phase. Please agree payment directly with your provider for now." />}
           </div>

@@ -3,9 +3,10 @@ import { ClientDashboard, clientTabs, type ClientTab } from "@/components/client
 import { getDashboardPath } from "@/lib/auth-roles";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  validateSearch: (search: Record<string, unknown>): { tab?: ClientTab } => {
+  validateSearch: (search: Record<string, unknown>): { tab?: ClientTab; c?: string } => {
     const tab = search["tab"];
-    return clientTabs.includes(tab as ClientTab) ? { tab: tab as ClientTab } : {};
+    const c = typeof search["c"] === "string" && /^[0-9a-f-]{36}$/i.test(search["c"] as string) ? (search["c"] as string) : undefined;
+    return { ...(clientTabs.includes(tab as ClientTab) ? { tab: tab as ClientTab } : {}), ...(c ? { c } : {}) };
   },
   beforeLoad: ({ context }) => {
     if (context.primaryRole !== "client") throw redirect({ to: getDashboardPath(context.primaryRole) });
@@ -15,6 +16,6 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardRoute() {
-  const { tab } = Route.useSearch();
-  return <ClientDashboard tab={tab ?? "overview"} />;
+  const { tab, c } = Route.useSearch();
+  return <ClientDashboard tab={tab ?? "overview"} conversation={c} />;
 }
