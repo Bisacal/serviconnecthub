@@ -43,6 +43,13 @@
       "when": 1790800550797,
       "tag": "0005_reviews_system",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790849592324,
+      "tag": "0006_verification_documents",
+      "breakpoints": true
     }
   ]
 }

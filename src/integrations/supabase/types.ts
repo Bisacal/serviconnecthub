@@ -581,6 +581,50 @@ export type Database = {
         }
         Relationships: []
       }
+      verification_documents: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          document_type: Database["public"]["Enums"]["verification_document_type"]
+          file_name: string | null
+          file_path: string
+          id: string
+          notes: string | null
+          provider_id: string
+          updated_at: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          document_type: Database["public"]["Enums"]["verification_document_type"]
+          file_name?: string | null
+          file_path: string
+          id?: string
+          notes?: string | null
+          provider_id: string
+          updated_at?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          document_type?: Database["public"]["Enums"]["verification_document_type"]
+          file_name?: string | null
+          file_path?: string
+          id?: string
+          notes?: string | null
+          provider_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_documents_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       provider_portfolios: {
@@ -646,6 +690,11 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      verification_document_type:
+        | "identity_document"
+        | "professional_certificate"
+        | "business_registration"
+        | "professional_licence"
       verification_status: "unverified" | "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
@@ -785,6 +834,12 @@ export const Constants = {
         "in_progress",
         "completed",
         "cancelled",
+      ],
+      verification_document_type: [
+        "identity_document",
+        "professional_certificate",
+        "business_registration",
+        "professional_licence",
       ],
       verification_status: ["unverified", "pending", "verified", "rejected"],
     },
