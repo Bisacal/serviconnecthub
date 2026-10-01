@@ -12,6 +12,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { useAuth } from "@/components/auth-provider";
 import { ProviderRequests } from "@/components/service-requests";
 import { ProviderReviews } from "@/components/reviews";
+import { ProviderVerification } from "@/components/verification";
 import { Logo } from "@/components/marketplace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -167,7 +168,7 @@ export function ProviderDashboard({ tab }: { tab: ProviderTab }) {
               {tab === "portfolio" && <Portfolio providerId={p.id} userId={user.id} />}
               {tab === "availability" && <AvailabilityPanel provider={p} />}
               {tab === "settings" && <AccountSettings userId={user.id} email={user.email ?? ""} />}
-              {tab === "verification" && <Placeholder title={`Verification status: ${p.verification_status}`} text="Document upload and identity checks will be added in a later phase. Verified professionals get a badge on their profile." />}
+              {tab === "verification" && <ProviderVerification provider={p} />}
               {tab === "requests" && <ProviderRequests providerId={p.id} />}
               {tab === "bookings" && <Placeholder title="Bookings are coming soon" text="Your confirmed jobs and schedule will appear here." />}
               {tab === "messages" && <Placeholder title="Messaging is coming soon" text="You'll be able to chat with clients directly." />}
