@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { useAuth } from "@/components/auth-provider";
 import { AdminReviews } from "@/components/reviews";
+import { AdminVerificationReview } from "@/components/verification";
 import { Logo } from "@/components/marketplace";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -299,20 +300,7 @@ function VerificationPanel() {
       </div>
       <State q={providers} />
       {!providers.isLoading && list.length === 0 && <div className={card}><p className="text-muted-warm">No verification requests waiting.</p></div>}
-      {list.map((p) => (
-        <div key={p.id} className={`${card} flex flex-col gap-4 md:flex-row md:items-center md:justify-between`}>
-          <div>
-            <p className="font-display text-lg font-semibold text-brand">{p.business_name || p.public_name || "Unnamed provider"}</p>
-            <p className="text-sm text-muted-warm">{p.profession ?? "—"} · Status: <span className="font-semibold capitalize">{p.verification_status}</span></p>
-          </div>
-          <div className="flex gap-2">
-            <Button size="sm" variant="terracotta" disabled={update.isPending || p.verification_status === "verified"}
-              onClick={() => update.mutate({ id: p.id, patch: { verification_status: "verified", is_verified: true } })}>Approve</Button>
-            <Button size="sm" variant="outline" disabled={update.isPending || p.verification_status === "rejected"}
-              onClick={() => update.mutate({ id: p.id, patch: { verification_status: "rejected", is_verified: false } })}>Reject</Button>
-          </div>
-        </div>
-      ))}
+      {list.map((p) => <AdminVerificationReview key={p.id} provider={p} />)}
     </div>
   );
 }
