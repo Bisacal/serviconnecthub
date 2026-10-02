@@ -31,7 +31,7 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
       POST: async ({ request }) => {
         const provider = process.env["PAYMENT_PROVIDER"];
         const secret = process.env["PAYMENT_WEBHOOK_SECRET"];
-        if (!provider || !secret) return new Response("Payments are not configured", { status: 503 });
+        if (!provider || !secret) return new Response("Payments are not configured", { status: 202 }); // inactive: acknowledged, nothing processed
 
         const raw = await request.text();
         const sig = request.headers.get("x-paystack-signature") ?? request.headers.get("x-webhook-signature") ?? "";
