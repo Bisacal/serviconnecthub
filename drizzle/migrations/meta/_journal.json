@@ -64,6 +64,13 @@
       "when": 1790891660037,
       "tag": "0008_messaging",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790931656318,
+      "tag": "0009_payments_architecture",
+      "breakpoints": true
     }
   ]
 }

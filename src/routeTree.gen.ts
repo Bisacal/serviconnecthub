@@ -31,6 +31,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ProvidersIdRouteImport } from './routes/providers.$id'
 import { Route as ServiceCategoriesIndexRouteImport } from './routes/service-categories.index'
 import { Route as ServiceCategoriesSlugRouteImport } from './routes/service-categories.$slug'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -143,6 +144,12 @@ const ServiceCategoriesSlugRoute = ServiceCategoriesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => ServiceCategoriesRoute,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/service-categories/$slug': typeof ServiceCategoriesSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/service-categories/': typeof ServiceCategoriesIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -187,6 +195,7 @@ export interface FileRoutesByTo {
   '/service-categories/$slug': typeof ServiceCategoriesSlugRoute
   '/blog': typeof BlogIndexRoute
   '/service-categories': typeof ServiceCategoriesIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -212,6 +221,7 @@ export interface FileRoutesById {
   '/service-categories/$slug': typeof ServiceCategoriesSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/service-categories/': typeof ServiceCategoriesIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/service-categories/$slug'
     | '/blog/'
     | '/service-categories/'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/service-categories/$slug'
     | '/blog'
     | '/service-categories'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -282,6 +294,7 @@ export interface FileRouteTypes {
     | '/service-categories/$slug'
     | '/blog/'
     | '/service-categories/'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -300,6 +313,7 @@ export interface RootRouteChildren {
   ServiceCategoriesRoute: typeof ServiceCategoriesRouteWithChildren
   ServicesRoute: typeof ServicesRoute
   ProvidersIdRoute: typeof ProvidersIdRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -458,6 +472,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiceCategoriesSlugRouteImport
       parentRoute: typeof ServiceCategoriesRoute
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -517,6 +538,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServiceCategoriesRoute: ServiceCategoriesRouteWithChildren,
   ServicesRoute: ServicesRoute,
   ProvidersIdRoute: ProvidersIdRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

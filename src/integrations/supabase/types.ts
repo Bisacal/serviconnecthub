@@ -160,6 +160,61 @@ export type Database = {
           },
         ]
       }
+      featured_listings: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          payment_id: string | null
+          provider_id: string
+          starts_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          payment_id?: string | null
+          provider_id: string
+          starts_at: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          payment_id?: string | null
+          provider_id?: string
+          starts_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "featured_listings_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "featured_listings_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "featured_listings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           attachment_mime: string | null
@@ -234,6 +289,145 @@ export type Database = {
           title?: string
           type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      payment_events: {
+        Row: {
+          created_at: string
+          event_id: string
+          event_type: string
+          id: string
+          payload: Json
+          payment_provider: string
+          processed_at: string | null
+          transaction_reference: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          event_type: string
+          id?: string
+          payload: Json
+          payment_provider: string
+          processed_at?: string | null
+          transaction_reference?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          event_type?: string
+          id?: string
+          payload?: Json
+          payment_provider?: string
+          processed_at?: string | null
+          transaction_reference?: string | null
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          booking_id: string | null
+          client_id: string | null
+          created_at: string
+          currency: string
+          environment: string
+          id: string
+          metadata: Json
+          paid_at: string | null
+          payment_provider: string
+          platform_fee: number
+          provider_amount: number | null
+          provider_id: string | null
+          provider_transaction_id: string | null
+          purpose: Database["public"]["Enums"]["payment_purpose"]
+          service_request_id: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          transaction_reference: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          booking_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          currency?: string
+          environment?: string
+          id?: string
+          metadata?: Json
+          paid_at?: string | null
+          payment_provider: string
+          platform_fee?: number
+          provider_amount?: number | null
+          provider_id?: string | null
+          provider_transaction_id?: string | null
+          purpose: Database["public"]["Enums"]["payment_purpose"]
+          service_request_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          transaction_reference: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          booking_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          currency?: string
+          environment?: string
+          id?: string
+          metadata?: Json
+          paid_at?: string | null
+          payment_provider?: string
+          platform_fee?: number
+          provider_amount?: number | null
+          provider_id?: string | null
+          provider_transaction_id?: string | null
+          purpose?: Database["public"]["Enums"]["payment_purpose"]
+          service_request_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          transaction_reference?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
         }
         Relationships: []
       }
@@ -523,6 +717,107 @@ export type Database = {
           },
         ]
       }
+      provider_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          payment_provider: string | null
+          plan_id: string
+          provider_id: string
+          provider_subscription_ref: string | null
+          status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          payment_provider?: string | null
+          plan_id: string
+          provider_id: string
+          provider_subscription_ref?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          payment_provider?: string | null
+          plan_id?: string
+          provider_id?: string
+          provider_subscription_ref?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_subscriptions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      refunds: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          payment_id: string
+          provider_refund_ref: string | null
+          reason: string | null
+          requested_by: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          payment_id: string
+          provider_refund_ref?: string | null
+          reason?: string | null
+          requested_by?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_id?: string
+          provider_refund_ref?: string | null
+          reason?: string | null
+          requested_by?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           client_id: string
@@ -752,6 +1047,45 @@ export type Database = {
           },
         ]
       }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json
+          id: string
+          interval: string
+          is_active: boolean
+          name: string
+          price: number
+          provider_plan_ref: string | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          interval?: string
+          is_active?: boolean
+          name: string
+          price: number
+          provider_plan_ref?: string | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          interval?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          provider_plan_ref?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -906,6 +1240,8 @@ export type Database = {
         | "declined"
         | "cancelled"
         | "completed"
+      payment_purpose: "service" | "subscription" | "featured_listing"
+      payment_status: "pending" | "successful" | "failed" | "refunded"
       price_type: "hourly" | "fixed" | "daily" | "negotiable" | "starting_from"
       request_status:
         | "pending"
@@ -914,6 +1250,12 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      subscription_status:
+        | "pending"
+        | "active"
+        | "past_due"
+        | "cancelled"
+        | "expired"
       verification_document_type:
         | "identity_document"
         | "professional_certificate"
@@ -1057,6 +1399,8 @@ export const Constants = {
         "cancelled",
         "completed",
       ],
+      payment_purpose: ["service", "subscription", "featured_listing"],
+      payment_status: ["pending", "successful", "failed", "refunded"],
       price_type: ["hourly", "fixed", "daily", "negotiable", "starting_from"],
       request_status: [
         "pending",
@@ -1065,6 +1409,13 @@ export const Constants = {
         "in_progress",
         "completed",
         "cancelled",
+      ],
+      subscription_status: [
+        "pending",
+        "active",
+        "past_due",
+        "cancelled",
+        "expired",
       ],
       verification_document_type: [
         "identity_document",
