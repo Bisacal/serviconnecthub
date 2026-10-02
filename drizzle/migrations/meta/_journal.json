@@ -71,6 +71,13 @@
       "when": 1790931656318,
       "tag": "0009_payments_architecture",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790932184223,
+      "tag": "0010_restrict_platform_settings_read",
+      "breakpoints": true
     }
   ]
 }
