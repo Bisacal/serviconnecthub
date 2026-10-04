@@ -8,6 +8,7 @@ import {
   LayoutDashboard, MessageSquare, Pencil, Plus, Settings, ShieldCheck, Star, Trash2, UserRound, Wallet,
 } from "lucide-react";
 
+import { ProviderSubscription } from "@/components/subscriptions";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { useAuth } from "@/components/auth-provider";
@@ -177,7 +178,7 @@ export function ProviderDashboard({ tab, conversation }: { tab: ProviderTab; con
               {tab === "messages" && <Inbox userId={user.id} selected={conversation} onSelect={(id) => void navigate({ to: "/provider-dashboard", search: { tab: "messages", c: id } })} />}
               {tab === "earnings" && <Placeholder title="Earnings are coming soon" text="Payouts and income summaries will be added with payments." />}
               {tab === "reviews" && <ProviderReviews providerId={p.id} />}
-              {tab === "subscription" && <Placeholder title="Subscriptions are coming soon" text="Premium listing plans will be available in a later phase." />}
+              {tab === "subscription" && <ProviderSubscription providerId={p.id} />}
               {tab === "notifications" && <Placeholder title="Notifications" text="Alerts about new requests and reviews will appear here." />}
             </>}
           </div>

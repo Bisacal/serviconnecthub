@@ -1049,6 +1049,7 @@ export type Database = {
       }
       subscription_plans: {
         Row: {
+          billing_enabled: boolean
           created_at: string
           currency: string
           description: string | null
@@ -1056,11 +1057,19 @@ export type Database = {
           id: string
           interval: string
           is_active: boolean
+          is_featured_placement: boolean
+          max_portfolio_items: number | null
+          max_services: number | null
           name: string
           price: number
           provider_plan_ref: string | null
+          slug: string | null
+          sort_order: number
+          updated_at: string
+          visibility_rank: number
         }
         Insert: {
+          billing_enabled?: boolean
           created_at?: string
           currency?: string
           description?: string | null
@@ -1068,11 +1077,19 @@ export type Database = {
           id?: string
           interval?: string
           is_active?: boolean
+          is_featured_placement?: boolean
+          max_portfolio_items?: number | null
+          max_services?: number | null
           name: string
           price: number
           provider_plan_ref?: string | null
+          slug?: string | null
+          sort_order?: number
+          updated_at?: string
+          visibility_rank?: number
         }
         Update: {
+          billing_enabled?: boolean
           created_at?: string
           currency?: string
           description?: string | null
@@ -1080,9 +1097,16 @@ export type Database = {
           id?: string
           interval?: string
           is_active?: boolean
+          is_featured_placement?: boolean
+          max_portfolio_items?: number | null
+          max_services?: number | null
           name?: string
           price?: number
           provider_plan_ref?: string | null
+          slug?: string | null
+          sort_order?: number
+          updated_at?: string
+          visibility_rank?: number
         }
         Relationships: []
       }
@@ -1225,6 +1249,7 @@ export type Database = {
           unread: number
         }[]
       }
+      provider_current_plan: { Args: { _provider_id: string }; Returns: string }
       start_conversation: {
         Args: { _client_id: string; _provider_id: string }
         Returns: string
