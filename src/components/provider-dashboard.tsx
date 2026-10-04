@@ -8,6 +8,7 @@ import {
   LayoutDashboard, MessageSquare, Pencil, Plus, Settings, ShieldCheck, Star, Trash2, UserRound, Wallet,
 } from "lucide-react";
 
+import { ProviderSubscription } from "@/components/subscriptions";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { useAuth } from "@/components/auth-provider";
