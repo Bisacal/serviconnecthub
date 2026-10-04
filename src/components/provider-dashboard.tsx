@@ -177,7 +177,7 @@ export function ProviderDashboard({ tab, conversation }: { tab: ProviderTab; con
               {tab === "messages" && <Inbox userId={user.id} selected={conversation} onSelect={(id) => void navigate({ to: "/provider-dashboard", search: { tab: "messages", c: id } })} />}
               {tab === "earnings" && <Placeholder title="Earnings are coming soon" text="Payouts and income summaries will be added with payments." />}
               {tab === "reviews" && <ProviderReviews providerId={p.id} />}
-              {tab === "subscription" && <Placeholder title="Subscriptions are coming soon" text="Premium listing plans will be available in a later phase." />}
+              {tab === "subscription" && <ProviderSubscription providerId={p.id} />}
               {tab === "notifications" && <Placeholder title="Notifications" text="Alerts about new requests and reviews will appear here." />}
             </>}
           </div>

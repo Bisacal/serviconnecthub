@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { useAuth } from "@/components/auth-provider";
 import { AdminReviews } from "@/components/reviews";
+import { AdminPlans } from "@/components/subscriptions";
 import { AdminVerificationReview } from "@/components/verification";
 import { Logo } from "@/components/marketplace";
 import { Button } from "@/components/ui/button";
@@ -132,6 +133,7 @@ export function AdminDashboard({ tab }: { tab: AdminTab }) {
             {tab === "verification" && <VerificationPanel />}
             {tab === "categories" && <CategoriesPanel />}
             {tab === "reviews" && <AdminReviews />}
+            {tab === "subscriptions" && <AdminPlans />}
             {!["overview", "users", "clients", "providers", "verification", "categories", "reviews"].includes(tab) &&
               <Placeholder title={`${current.label} is coming in a later phase`} text="This section is reserved so the admin console structure is ready as the marketplace grows." />}
           </div>
