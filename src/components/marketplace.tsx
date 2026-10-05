@@ -25,6 +25,7 @@ import {
   Star,
   UserRound,
   X,
+  Crown,
 } from "lucide-react";
 
 import heroImage from "@/assets/serviconnect-hero.jpg";
@@ -49,6 +50,7 @@ import {
   providersForCategory,
   ratingFilters,
   type Provider,
+  rankProviders,
 } from "@/lib/marketplace-data";
 
 
