@@ -59,6 +59,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Suspended or deactivated accounts are signed out (the database also refuses their new activity).
+  const userId = session?.user.id;
+  useEffect(() => {
+    if (!userId) return;
+    void supabase.from("profiles").select("status").eq("user_id", userId).maybeSingle().then(async ({ data }) => {
+      if (data && data.status !== "active") {
+        const { toast } = await import("sonner");
+        toast.error(data.status === "suspended" ? "Your account is suspended. Please contact SERVICONNECT support." : "This account has been deactivated.");
+        await queryClient.cancelQueries();
+        queryClient.clear();
+        await supabase.auth.signOut();
+        await navigate({ to: "/auth", search: { mode: "login", role: "client" }, replace: true });
+      }
+    });
+  }, [userId, navigate, queryClient]);
+
   const value = useMemo(
     () => ({
       session,

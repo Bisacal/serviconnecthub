@@ -306,7 +306,7 @@ function SavedList({ userId, limit }: { userId: string; limit?: number }) {
 
 /* ---------- notifications ---------- */
 
-function Notifications({ userId }: { userId: string }) {
+export function Notifications({ userId }: { userId: string }) {
   const qc = useQueryClient();
   const notes = useNotifications(userId);
   const markAll = useMutation({
