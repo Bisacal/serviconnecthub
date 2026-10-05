@@ -152,7 +152,7 @@ function ProviderSubscriptionsAdmin({ plans }: { plans: Plan[] }) {
       <div className="mt-3 divide-y">
         {subs.data?.map((s) => (
           <div key={s.id} className="flex flex-wrap items-center gap-3 py-3 text-sm">
-            <span className="min-w-40 flex-1 font-medium">{s.provider_profiles?.business_name || s.provider_profiles?.public_name || "Provider"}</span>
+            <span className="min-w-40 flex-1 font-medium">{s.provider_profiles?.business_name || s.provider_profiles?.public_name || "Unnamed provider (profile not completed)"}</span>
             <select aria-label="Plan" className="rounded-md border bg-background px-2 py-1" value={s.plan_id} onChange={(e) => update.mutate({ id: s.id, plan_id: e.target.value })}>
               {plans.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>

@@ -134,7 +134,7 @@ export function AdminDashboard({ tab }: { tab: AdminTab }) {
             {tab === "categories" && <CategoriesPanel />}
             {tab === "reviews" && <AdminReviews />}
             {tab === "subscriptions" && <AdminPlans />}
-            {!["overview", "users", "clients", "providers", "verification", "categories", "reviews"].includes(tab) &&
+            {!["overview", "users", "clients", "providers", "verification", "categories", "reviews", "subscriptions"].includes(tab) &&
               <Placeholder title={`${current.label} is coming in a later phase`} text="This section is reserved so the admin console structure is ready as the marketplace grows." />}
           </div>
         </section>
