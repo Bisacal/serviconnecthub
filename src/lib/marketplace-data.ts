@@ -28,6 +28,9 @@ export type Provider = {
   price: string;
   image: string;
   verified?: boolean;
+  /** Subscription visibility level: 0 Free, 1 Professional, 2 Premium. */
+  planRank?: number;
+  featured?: boolean;
   experience: string;
   availability: string;
   categorySlug: string;
@@ -50,17 +53,17 @@ export type BlogPost = {
 };
 
 export const providers: Provider[] = [
-  { id: "bola-okafor", name: "Bola Okafor", profession: "Solar installer", location: "Gwagwalada, Abuja", rating: "4.9", reviews: 212, price: "₦15,000", image: bolaImage, verified: true, experience: "8 years", availability: "Available today", categorySlug: "solar-energy", subcategory: "Solar Installation" },
+  { id: "bola-okafor", name: "Bola Okafor", profession: "Solar installer", location: "Gwagwalada, Abuja", rating: "4.9", reviews: 212, price: "₦15,000", image: bolaImage, verified: true, experience: "8 years", availability: "Available today", categorySlug: "solar-energy", subcategory: "Solar Installation", planRank: 2, featured: true },
   { id: "emeka-nwosu", name: "Emeka Nwosu", profession: "Auto mechanic", location: "Rukuba, Abuja", rating: "4.8", reviews: 146, price: "₦8,000", image: emekaImage, verified: true, experience: "11 years", availability: "Available tomorrow", categorySlug: "automotive-services", subcategory: "Mechanic" },
   { id: "tunde-alaba", name: "Tunde Alaba", profession: "Plumber", location: "Jabi, Abuja", rating: "4.7", reviews: 94, price: "₦6,000", image: tundeImage, experience: "6 years", availability: "Available today", categorySlug: "plumbing", subcategory: "Pipe Fitting & Repairs" },
   { id: "amina-yusuf", name: "Amina Yusuf", profession: "Home tutor · Maths", location: "Gwarinpa, Abuja", rating: "5.0", reviews: 168, price: "₦8,500/hr", image: bolaImage, verified: true, experience: "9 years", availability: "Weekday evenings", categorySlug: "education-tutoring", subcategory: "Mathematics Tutor" },
-  { id: "chidi-okonkwo", name: "Chidi Okonkwo", profession: "Electrician", location: "Wuse, Abuja", rating: "4.8", reviews: 121, price: "₦5,500", image: emekaImage, verified: true, experience: "10 years", availability: "Available today", categorySlug: "electrical-services", subcategory: "Home Wiring & Repairs" },
+  { id: "chidi-okonkwo", name: "Chidi Okonkwo", profession: "Electrician", location: "Wuse, Abuja", rating: "4.8", reviews: 121, price: "₦5,500", image: emekaImage, verified: true, experience: "10 years", availability: "Available today", categorySlug: "electrical-services", subcategory: "Home Wiring & Repairs", planRank: 1 },
   { id: "funke-adeleke", name: "Funke Adeleke", profession: "House painter", location: "Garki, Abuja", rating: "4.6", reviews: 78, price: "₦12,000", image: bolaImage, experience: "7 years", availability: "Available tomorrow", categorySlug: "painting", subcategory: "Interior Painting" },
-  { id: "ibrahim-sule", name: "Ibrahim Sule", profession: "Deep cleaning specialist", location: "Kubwa, Abuja", rating: "4.9", reviews: 187, price: "₦10,000", image: tundeImage, verified: true, experience: "6 years", availability: "Available today", categorySlug: "cleaning", subcategory: "Deep Cleaning" },
+  { id: "ibrahim-sule", name: "Ibrahim Sule", profession: "Deep cleaning specialist", location: "Kubwa, Abuja", rating: "4.9", reviews: 187, price: "₦10,000", image: tundeImage, verified: true, experience: "6 years", availability: "Available today", categorySlug: "cleaning", subcategory: "Deep Cleaning", planRank: 1 },
   { id: "grace-ekong", name: "Grace Ekong", profession: "Carpenter & furniture maker", location: "Lugbe, Abuja", rating: "4.7", reviews: 65, price: "₦9,000", image: bolaImage, experience: "12 years", availability: "Weekdays", categorySlug: "carpentry", subcategory: "Custom Furniture" },
   { id: "segun-balogun", name: "Segun Balogun", profession: "Laptop & phone repair", location: "Maitama, Abuja", rating: "4.8", reviews: 143, price: "₦7,000", image: emekaImage, verified: true, experience: "8 years", availability: "Available today", categorySlug: "technology-services", subcategory: "Device Repair" },
   { id: "ngozi-obi", name: "Ngozi Obi", profession: "Event photographer", location: "Asokoro, Abuja", rating: "4.9", reviews: 112, price: "₦25,000", image: bolaImage, verified: true, experience: "7 years", availability: "Weekends", categorySlug: "creative-services", subcategory: "Photography" },
-  { id: "kemi-owolabi", name: "Kemi Owolabi", profession: "Hair stylist & braider", location: "Gwarinpa, Abuja", rating: "4.9", reviews: 231, price: "₦6,500", image: bolaImage, verified: true, experience: "9 years", availability: "Available today", categorySlug: "fashion-beauty", subcategory: "Hair Styling" },
+  { id: "kemi-owolabi", name: "Kemi Owolabi", profession: "Hair stylist & braider", location: "Gwarinpa, Abuja", rating: "4.9", reviews: 231, price: "₦6,500", image: bolaImage, verified: true, experience: "9 years", availability: "Available today", categorySlug: "fashion-beauty", subcategory: "Hair Styling", planRank: 2, featured: true },
   { id: "yusuf-bello", name: "Yusuf Bello", profession: "Caterer · Nigerian dishes", location: "Jabi, Abuja", rating: "4.8", reviews: 97, price: "₦50,000", image: tundeImage, experience: "10 years", availability: "Book 1 week ahead", categorySlug: "events-catering", subcategory: "Catering" },
 ];
 
@@ -174,3 +177,9 @@ export const experienceFilters = [
 ];
 
 export const availabilityOptions = ["Any availability", ...Array.from(new Set(providers.map((p) => p.availability)))];
+
+/** "Recommended" order: featured (Premium) first, then higher plan visibility, then rating. */
+export function rankProviders<T extends Provider>(list: T[]): T[] {
+  return [...list].sort((a, b) =>
+    Number(!!b.featured) - Number(!!a.featured) || (b.planRank ?? 0) - (a.planRank ?? 0) || Number(b.rating) - Number(a.rating));
+}
