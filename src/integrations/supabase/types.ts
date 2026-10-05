@@ -1250,6 +1250,14 @@ export type Database = {
         }[]
       }
       provider_current_plan: { Args: { _provider_id: string }; Returns: string }
+      provider_visibility: {
+        Args: never
+        Returns: {
+          is_featured: boolean
+          provider_id: string
+          visibility_rank: number
+        }[]
+      }
       start_conversation: {
         Args: { _client_id: string; _provider_id: string }
         Returns: string
