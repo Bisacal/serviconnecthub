@@ -136,6 +136,7 @@ export function LiveProviderProfile({ id }: { id: string }) {
   if (isUuid && q.isLoading) return <PublicLayout><main className="page-shell py-20 text-center text-muted-warm">Loading…</main></PublicLayout>;
   if (!p) return <PublicLayout><main className="page-shell py-20 text-center"><h1 className="font-display text-4xl font-semibold text-brand">Provider not found</h1><p className="mt-3 text-sm text-muted-warm">This profile is not available.</p><Button asChild variant="terracotta" className="mt-6 rounded-full"><Link to="/directory" search={{ service: "", location: "Abuja, FCT" }}>Back to directory <ArrowRight /></Link></Button></main></PublicLayout>;
   const name = p.public_name || p.business_name || "Service provider";
+  const pid = p.id ?? "";
   return (
     <PublicLayout>
       <main className="page-shell grid gap-8 py-12 lg:grid-cols-[1fr_320px]">
@@ -150,15 +151,15 @@ export function LiveProviderProfile({ id }: { id: string }) {
             <span className="capitalize">{p.availability_status}</span>
           </div>
           {p.bio && <p className="mt-6 whitespace-pre-line text-ink">{p.bio}</p>}
-          <PublicReviews providerId={p.id} />
+          <PublicReviews providerId={pid} />
         </section>
         <aside className="grid h-fit gap-3 rounded-3xl bg-primary-foreground p-6 ring-1 ring-sand-deep">
           <Button variant="brand" size="lg" className="w-full rounded-full" onClick={() => setBookOpen(true)}><Clock className="size-4" /> Book appointment</Button>
           <Button variant="outline" size="lg" className="w-full rounded-full" onClick={() => setOpen(true)}><CalendarCheck className="size-4" /> Send service request</Button>
         </aside>
       </main>
-      <RequestServiceDialog providerId={p.id} providerName={name} open={open} onOpenChange={setOpen} />
-      <BookingDialog providerId={p.id} providerName={name} open={bookOpen} onOpenChange={setBookOpen} />
+      <RequestServiceDialog providerId={pid} providerName={name} open={open} onOpenChange={setOpen} />
+      <BookingDialog providerId={pid} providerName={name} open={bookOpen} onOpenChange={setBookOpen} />
     </PublicLayout>
   );
 }

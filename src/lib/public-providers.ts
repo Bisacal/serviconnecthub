@@ -45,23 +45,26 @@ export function usePublicProviders() {
       ]);
       if (error) throw error;
       const rank = new Map((visibility ?? []).map((entry) => [entry.provider_id, entry]));
-      return (data ?? []).map((p) => ({
-        id: p.id,
-        name: p.public_name || p.business_name || "Service provider",
-        profession: p.profession ?? "Professional",
-        headline: p.headline,
-        location: [p.area, p.city].filter(Boolean).join(", ") || p.state || "Abuja, FCT",
-        rating: Number(p.rating_average ?? 0),
-        reviews: p.review_count ?? 0,
-        price: p.starting_price == null ? null : Number(p.starting_price),
-        verified: p.is_verified,
-        featured: rank.get(p.id)?.is_featured ?? false,
-        planRank: rank.get(p.id)?.visibility_rank ?? 0,
-        experienceYears: p.years_experience ?? 0,
-        availabilityStatus: p.availability_status,
-        categorySlug: p.category?.slug ?? null,
-        categoryName: p.category?.name ?? null,
-      }));
+      return (data ?? []).map((p) => {
+        const id = p.id ?? "";
+        return {
+          id,
+          name: p.public_name || p.business_name || "Service provider",
+          profession: p.profession ?? "Professional",
+          headline: p.headline,
+          location: [p.area, p.city].filter(Boolean).join(", ") || p.state || "Abuja, FCT",
+          rating: Number(p.rating_average ?? 0),
+          reviews: p.review_count ?? 0,
+          price: p.starting_price == null ? null : Number(p.starting_price),
+          verified: p.is_verified ?? false,
+          featured: rank.get(id)?.is_featured ?? false,
+          planRank: rank.get(id)?.visibility_rank ?? 0,
+          experienceYears: p.years_experience ?? 0,
+          availabilityStatus: p.availability_status ?? "unavailable",
+          categorySlug: p.category?.slug ?? null,
+          categoryName: p.category?.name ?? null,
+        };
+      });
     },
   });
 }
