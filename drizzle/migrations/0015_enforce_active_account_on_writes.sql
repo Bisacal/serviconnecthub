@@ -1,0 +1,18 @@
+CREATE POLICY "Active accounts only (modify)" ON public.profiles AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (modify)" ON public.client_profiles AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (modify)" ON public.provider_profiles AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (modify)" ON public.provider_services AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (delete)" ON public.provider_services AS RESTRICTIVE FOR DELETE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (modify)" ON public.portfolio_items AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (delete)" ON public.portfolio_items AS RESTRICTIVE FOR DELETE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (add)" ON public.provider_availability AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (private.account_is_active());
+CREATE POLICY "Active accounts only (modify)" ON public.provider_availability AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (delete)" ON public.provider_availability AS RESTRICTIVE FOR DELETE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (add)" ON public.saved_providers AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (private.account_is_active());
+CREATE POLICY "Active accounts only (delete)" ON public.saved_providers AS RESTRICTIVE FOR DELETE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (modify)" ON public.service_requests AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (modify)" ON public.bookings AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (modify)" ON public.reviews AS RESTRICTIVE FOR UPDATE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (delete)" ON public.reviews AS RESTRICTIVE FOR DELETE TO authenticated USING (private.account_is_active());
+CREATE POLICY "Active accounts only (add)" ON public.verification_documents AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (private.account_is_active());
+CREATE POLICY "Active accounts only (delete)" ON public.verification_documents AS RESTRICTIVE FOR DELETE TO authenticated USING (private.account_is_active());
