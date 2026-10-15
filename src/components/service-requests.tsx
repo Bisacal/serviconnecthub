@@ -125,9 +125,9 @@ export function LiveProviderProfile({ id }: { id: string }) {
     queryKey: ["public-provider", id],
     enabled: isUuid,
     queryFn: async () => {
-      const { data, error } = await supabase.from("provider_profiles")
+      const { data, error } = await supabase.from("public_providers")
         .select("id, public_name, business_name, profession, headline, bio, city, area, rating_average, review_count, is_verified, years_experience, availability_status")
-        .eq("id", id).eq("is_published", true).maybeSingle();
+        .eq("id", id).maybeSingle();
       if (error) throw error;
       return data;
     },
