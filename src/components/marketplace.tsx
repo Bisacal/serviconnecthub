@@ -1,20 +1,16 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { LiveProviderProfile } from "@/components/service-requests";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
 import {
   ArrowRight,
   Award,
-  BadgeCheck,
   Bell,
   BriefcaseBusiness,
-  CalendarCheck,
   Check,
   ChevronDown,
   ChevronRight,
   CircleHelp,
   Clock3,
-  Heart,
   MapPin,
   Menu,
   MessageCircle,
