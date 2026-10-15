@@ -127,6 +127,13 @@
       "when": 1792054929491,
       "tag": "0017_public_providers_safe_view",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1792056139948,
+      "tag": "0018_rate_limiting",
+      "breakpoints": true
     }
   ]
 }
