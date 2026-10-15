@@ -190,7 +190,7 @@ export function DirectoryPage({ service = "", location = "" }: { service?: strin
     setPrice(priceRanges[0]!.label);
     setRating(ratingFilters[0]!.label);
     setExperience(experienceFilters[0]!.label);
-    setAvailability(availabilityOptions[0]!);
+    setAvailability(availabilityFilterOptions[0]!);
     setVerifiedOnly(false);
   };
 
@@ -201,7 +201,7 @@ export function DirectoryPage({ service = "", location = "" }: { service?: strin
       <FilterSelect label="Price range" value={price} onChange={setPrice} options={priceRanges.map((item) => item.label)} />
       <FilterSelect label="Rating" value={rating} onChange={setRating} options={ratingFilters.map((item) => item.label)} />
       <FilterSelect label="Experience" value={experience} onChange={setExperience} options={experienceFilters.map((item) => item.label)} />
-      <FilterSelect label="Availability" value={availability} onChange={setAvailability} options={availabilityOptions} />
+      <FilterSelect label="Availability" value={availability} onChange={setAvailability} options={availabilityFilterOptions} />
       <label className="flex items-center gap-3 rounded-2xl bg-sand p-4 text-sm font-semibold text-brand">
         <input type="checkbox" checked={verifiedOnly} onChange={(event) => setVerifiedOnly(event.target.checked)} className="size-4" />
         <span className="flex items-center gap-1.5"><ShieldCheck className="size-4 text-accent-green" /> Verified providers only</span>
@@ -227,7 +227,7 @@ export function DirectoryPage({ service = "", location = "" }: { service?: strin
           </div>
         </div>
         {showFilters && <div className="mt-5 rounded-3xl bg-primary-foreground p-5 ring-1 ring-sand-deep/70 lg:hidden">{filterPanel}</div>}
-        {filtered.length > 0 ? <div className="mt-5 grid gap-3 xl:grid-cols-2">{filtered.map((provider) => <ProviderCard provider={provider} key={provider.id} />)}</div> : <div className="mt-6 rounded-3xl bg-primary-foreground p-8 text-center ring-1 ring-sand-deep/70"><Search className="mx-auto size-8 text-terracotta" /><h2 className="mt-4 font-display text-2xl font-semibold text-brand">No professionals match these filters.</h2><p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-warm">Try widening your price range or clearing a filter to see more of the Abuja directory.</p><Button variant="terracotta" className="mt-6 rounded-full" onClick={resetFilters}>Clear all filters</Button></div>}
+        {providersQuery.isLoading ? <p className="mt-8 text-center text-sm text-muted-warm">Loading professionals…</p> : filtered.length > 0 ? <div className="mt-5 grid gap-3 xl:grid-cols-2">{filtered.map((provider) => <ProviderCard provider={provider} key={provider.id} />)}</div> : (providersQuery.data ?? []).length === 0 ? <ProvidersEmptyState title="Our first professionals are on the way." body="We are verifying and onboarding trusted Abuja professionals right now. Check back soon — or join as a provider and be among the first listed." /> : <div className="mt-6 rounded-3xl bg-primary-foreground p-8 text-center ring-1 ring-sand-deep/70"><Search className="mx-auto size-8 text-terracotta" /><h2 className="mt-4 font-display text-2xl font-semibold text-brand">No professionals match these filters.</h2><p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-warm">Try widening your price range or clearing a filter to see more of the Abuja directory.</p><Button variant="terracotta" className="mt-6 rounded-full" onClick={resetFilters}>Clear all filters</Button></div>}
       </div>
     </section>
   </main></PublicLayout>;
