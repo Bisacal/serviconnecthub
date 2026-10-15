@@ -162,27 +162,27 @@ export function DirectoryPage({ service = "", location = "" }: { service?: strin
   const [price, setPrice] = useState(priceRanges[0]!.label);
   const [rating, setRating] = useState(ratingFilters[0]!.label);
   const [experience, setExperience] = useState(experienceFilters[0]!.label);
-  const [availability, setAvailability] = useState(availabilityOptions[0]!);
+  const [availability, setAvailability] = useState(availabilityFilterOptions[0]!);
+  const providersQuery = usePublicProviders();
   const [verifiedOnly, setVerifiedOnly] = useState(false);
 
   const filtered = useMemo(() => {
     const range = priceRanges.find((item) => item.label === price) ?? priceRanges[0]!;
     const minRating = (ratingFilters.find((item) => item.label === rating) ?? ratingFilters[0]!).min;
     const minYears = (experienceFilters.find((item) => item.label === experience) ?? experienceFilters[0]!).min;
-    const list = providers.filter((provider) => {
-      if (category !== "All categories" && getCategoryBySlug(provider.categorySlug)?.name !== category) return false;
+    const list = (providersQuery.data ?? []).filter((provider) => {
+      if (category !== "All categories" && provider.categoryName !== category) return false;
       if (area !== "All of Abuja" && !provider.location.toLowerCase().includes(area.split(",")[0]!.toLowerCase())) return false;
-      const value = providerPriceValue(provider);
-      if (value < range.min || value > range.max) return false;
-      if (Number(provider.rating) < minRating) return false;
-      if (providerExperienceYears(provider) < minYears) return false;
-      if (availability !== availabilityOptions[0] && provider.availability !== availability) return false;
+      if (provider.price != null && (provider.price < range.min || provider.price > range.max)) return false;
+      if (provider.rating < minRating) return false;
+      if (provider.experienceYears < minYears) return false;
+      if (availability !== availabilityFilterOptions[0] && availabilityLabels[provider.availabilityStatus] !== availability) return false;
       if (verifiedOnly && !provider.verified) return false;
       return true;
     });
-    if (sort === "Recommended") return rankProviders(list);
-    return list.sort((a, b) => sort === "Highest rated" ? Number(b.rating) - Number(a.rating) : sort === "Price: low to high" ? providerPriceValue(a) - providerPriceValue(b) : sort === "Most experienced" ? providerExperienceYears(b) - providerExperienceYears(a) : 0);
-  }, [category, area, price, rating, experience, availability, verifiedOnly, sort]);
+    if (sort === "Recommended") return rankPublicProviders(list);
+    return list.sort((a, b) => sort === "Highest rated" ? b.rating - a.rating : sort === "Price: low to high" ? (a.price ?? Number.POSITIVE_INFINITY) - (b.price ?? Number.POSITIVE_INFINITY) : sort === "Most experienced" ? b.experienceYears - a.experienceYears : 0);
+  }, [providersQuery.data, category, area, price, rating, experience, availability, verifiedOnly, sort]);
 
   const resetFilters = () => {
     setCategory("All categories");
