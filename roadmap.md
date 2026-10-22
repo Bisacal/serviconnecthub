@@ -1,7 +1,9 @@
 - [x] Complete public page coverage with explicit categories and search-results routes
 - [x] Connect search, category, directory, profile, contact, and blog interactions
 - [x] Verify responsive navigation, routes, and build health
-- [ ] Close targeted account-status gaps in Storage, notifications, portfolio creation, profile deletion, and conversation RPCs
-- [ ] Review all authenticated write permissions and add missing status guards without widening access
-- [ ] Execute approved dedicated-account tests; restore status and verify fixture cleanup
-- [ ] Run regression checks and linter; report live results and untested operations
+- [x] Close targeted account-status gaps in Storage, notifications, portfolio creation, profile deletion, and conversation RPCs
+- [x] Review all authenticated write permissions and add missing status guards without widening access
+- [x] Execute approved dedicated-account tests; restore status and verify fixture cleanup
+- [x] Run regression checks and linter; report live results and untested operations
+- [ ] Full client request/booking creation tests: blocked on an authorized dedicated client session and eligible isolated published-provider fixture
+- [ ] Existing personal/provider-profile deletion: not tested; requires a suitable isolated test environment, not production profiles
