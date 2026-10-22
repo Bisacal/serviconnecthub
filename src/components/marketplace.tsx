@@ -35,7 +35,8 @@ import {
   locations,
   priceRanges,
   ratingFilters,
-, getBlogPostBySlug } from "@/lib/marketplace-data";
+  getBlogPostBySlug,
+} from "@/lib/marketplace-data";
 import {
   availabilityFilterOptions,
   availabilityLabels,
