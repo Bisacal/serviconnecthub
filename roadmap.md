@@ -1,3 +1,7 @@
 - [x] Complete public page coverage with explicit categories and search-results routes
 - [x] Connect search, category, directory, profile, contact, and blog interactions
 - [x] Verify responsive navigation, routes, and build health
+- [ ] Close targeted account-status gaps in Storage, notifications, portfolio creation, profile deletion, and conversation RPCs
+- [ ] Review all authenticated write permissions and add missing status guards without widening access
+- [ ] Execute approved dedicated-account tests; restore status and verify fixture cleanup
+- [ ] Run regression checks and linter; report live results and untested operations
