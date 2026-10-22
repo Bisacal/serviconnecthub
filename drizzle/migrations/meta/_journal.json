@@ -134,6 +134,13 @@
       "when": 1792056139948,
       "tag": "0018_rate_limiting",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792653047042,
+      "tag": "0019_complete_account_status_write_guards",
+      "breakpoints": true
     }
   ]
 }
