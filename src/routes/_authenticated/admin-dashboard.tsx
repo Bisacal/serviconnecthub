@@ -3,6 +3,7 @@ import { AdminDashboard, adminTabs, type AdminTab } from "@/components/admin-das
 import { getDashboardPath } from "@/lib/auth-roles";
 
 export const Route = createFileRoute("/_authenticated/admin-dashboard")({
+  staticData: { sitemap: false },
   validateSearch: (search: Record<string, unknown>): { tab?: AdminTab } => {
     const tab = search["tab"];
     return adminTabs.includes(tab as AdminTab) ? { tab: tab as AdminTab } : {};

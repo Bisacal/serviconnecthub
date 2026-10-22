@@ -3,6 +3,7 @@ import { CategoryDetailPage } from "@/components/marketplace";
 import { getCategoryBySlug } from "@/lib/marketplace-data";
 
 export const Route = createFileRoute("/service-categories/$slug")({
+  staticData: { sitemap: true },
   head: ({ params }) => {
     const category = getCategoryBySlug(params.slug);
     const title = category ? `${category.name} — SERVICONNECT` : "Category — SERVICONNECT";

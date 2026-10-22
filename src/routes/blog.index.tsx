@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BlogPage } from "@/components/marketplace";
 
 export const Route = createFileRoute("/blog/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Journal — SERVICONNECT" },

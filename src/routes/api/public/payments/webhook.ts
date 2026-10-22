@@ -26,6 +26,7 @@ const statusFor = (event: string): "successful" | "failed" | "refunded" | null =
 };
 
 export const Route = createFileRoute("/api/public/payments/webhook")({
+  staticData: { sitemap: false },
   server: {
     handlers: {
       POST: async ({ request }) => {

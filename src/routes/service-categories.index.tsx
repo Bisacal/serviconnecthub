@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ServiceCategoriesPage } from "@/components/marketplace";
 
 export const Route = createFileRoute("/service-categories/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Service Categories — SERVICONNECT" },
