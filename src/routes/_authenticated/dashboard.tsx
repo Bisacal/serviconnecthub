@@ -3,6 +3,7 @@ import { ClientDashboard, clientTabs, type ClientTab } from "@/components/client
 import { getDashboardPath } from "@/lib/auth-roles";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
+  staticData: { sitemap: false },
   validateSearch: (search: Record<string, unknown>): { tab?: ClientTab; c?: string } => {
     const tab = search["tab"];
     const c = typeof search["c"] === "string" && /^[0-9a-f-]{36}$/i.test(search["c"] as string) ? (search["c"] as string) : undefined;

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getPrimaryRole, getUserRoles } from "@/lib/auth-roles";
 
 export const Route = createFileRoute("/_authenticated")({
+  staticData: { sitemap: "exclude-subtree" },
   ssr: false,
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();

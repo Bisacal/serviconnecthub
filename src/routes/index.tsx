@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { HomePage } from "@/components/marketplace";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "SERVICONNECT — Find Trusted Professionals" },

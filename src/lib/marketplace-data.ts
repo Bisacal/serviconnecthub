@@ -24,9 +24,11 @@ export type MarketplaceCategory = {
 };
 
 export type BlogPost = {
+  slug: string;
   title: string;
   category: string;
   date: string;
+  summary: string;
 };
 
 export const categories: MarketplaceCategory[] = [
@@ -62,10 +64,14 @@ export const locations: string[] = [
 ];
 
 export const blogPosts: BlogPost[] = [
-  { title: "How to choose a reliable professional for your home", category: "Getting started", date: "May 12, 2026" },
-  { title: "What a verified provider profile should tell you", category: "Trust & safety", date: "May 05, 2026" },
-  { title: "The Abuja neighbourhood guide to getting things done", category: "Local guide", date: "Apr 28, 2026" },
+  { slug: "article-1", title: "How to choose a reliable professional for your home", category: "Getting started", date: "May 12, 2026", summary: "What to check before you hire: services offered, location, starting price, experience and real client reviews." },
+  { slug: "article-2", title: "What a verified provider profile should tell you", category: "Trust & safety", date: "May 05, 2026", summary: "The trust signals that matter on a provider profile — verification, ratings, availability and clear pricing." },
+  { slug: "article-3", title: "The Abuja neighbourhood guide to getting things done", category: "Local guide", date: "Apr 28, 2026", summary: "How to find reliable help across Abuja's neighbourhoods, from Gwarinpa to Gwagwalada." },
 ];
+
+export function getBlogPostBySlug(slug: string) {
+  return blogPosts.find((post) => post.slug === slug);
+}
 
 export const priceRanges = [
   { label: "Any price", min: 0, max: Number.POSITIVE_INFINITY },

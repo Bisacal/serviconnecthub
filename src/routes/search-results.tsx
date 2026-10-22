@@ -4,6 +4,7 @@ import { SearchResultsPage } from "@/components/marketplace";
 type SearchResultsSearch = { service?: string | undefined; location?: string | undefined };
 
 export const Route = createFileRoute("/search-results")({
+  staticData: { sitemap: true },
   validateSearch: (search: Record<string, unknown>) => ({
     service: typeof search["service"] === "string" ? search["service"] : undefined,
     location: typeof search["location"] === "string" ? search["location"] : undefined,

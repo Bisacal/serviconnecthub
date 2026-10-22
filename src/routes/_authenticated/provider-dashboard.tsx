@@ -3,6 +3,7 @@ import { ProviderDashboard, providerTabs, type ProviderTab } from "@/components/
 import { getDashboardPath } from "@/lib/auth-roles";
 
 export const Route = createFileRoute("/_authenticated/provider-dashboard")({
+  staticData: { sitemap: false },
   validateSearch: (search: Record<string, unknown>): { tab?: ProviderTab; c?: string } => {
     const tab = search["tab"];
     const c = typeof search["c"] === "string" && /^[0-9a-f-]{36}$/i.test(search["c"] as string) ? (search["c"] as string) : undefined;

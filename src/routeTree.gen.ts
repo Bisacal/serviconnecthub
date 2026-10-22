@@ -23,6 +23,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SearchResultsRouteImport } from './routes/search-results'
 import { Route as ServiceCategoriesRouteImport } from './routes/service-categories'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin-dashboard'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProviderDashboardRouteImport } from './routes/_authenticated/provider-dashboard'
@@ -102,6 +103,11 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminDashboardRoute =
   AuthenticatedAdminDashboardRouteImport.update({
     id: '/admin-dashboard',
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/search-results': typeof SearchResultsRoute
   '/service-categories': typeof ServiceCategoriesRouteWithChildren
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/search-results': typeof SearchResultsRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/search-results': typeof SearchResultsRoute
   '/service-categories': typeof ServiceCategoriesRouteWithChildren
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin-dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/provider-dashboard': typeof AuthenticatedProviderDashboardRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/search-results'
     | '/service-categories'
     | '/services'
+    | '/sitemap.xml'
     | '/admin-dashboard'
     | '/dashboard'
     | '/provider-dashboard'
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search-results'
     | '/services'
+    | '/sitemap.xml'
     | '/admin-dashboard'
     | '/dashboard'
     | '/provider-dashboard'
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
     | '/search-results'
     | '/service-categories'
     | '/services'
+    | '/sitemap.xml'
     | '/_authenticated/admin-dashboard'
     | '/_authenticated/dashboard'
     | '/_authenticated/provider-dashboard'
@@ -312,6 +324,7 @@ export interface RootRouteChildren {
   SearchResultsRoute: typeof SearchResultsRoute
   ServiceCategoriesRoute: typeof ServiceCategoriesRouteWithChildren
   ServicesRoute: typeof ServicesRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ProvidersIdRoute: typeof ProvidersIdRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -414,6 +427,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin-dashboard': {
@@ -537,6 +557,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchResultsRoute: SearchResultsRoute,
   ServiceCategoriesRoute: ServiceCategoriesRouteWithChildren,
   ServicesRoute: ServicesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ProvidersIdRoute: ProvidersIdRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
