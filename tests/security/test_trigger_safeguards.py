@@ -5,6 +5,7 @@ cluster; every psql call has explicit local connection arguments and a clean
 environment. No production credentials, accounts or records are accessed.
 """
 import os
+import pwd
 import shutil
 import subprocess
 import tempfile
@@ -94,11 +95,16 @@ class TriggerSafeguardExecutionTests(unittest.TestCase):
         cls.env = {'PATH': os.environ.get('PATH', ''), 'HOME': str(cls.folder), 'LC_ALL': 'C'}
         cls.demote = None
         if os.geteuid() == 0:
-            os.chown(cls.folder, 65534, 65534)
+            local_users = [user for user in pwd.getpwall() if user.pw_uid != 0]
+            if not local_users:
+                shutil.rmtree(cls.folder)
+                raise unittest.SkipTest('No unprivileged local operating-system user')
+            local_user = local_users[0]
+            os.chown(cls.folder, local_user.pw_uid, local_user.pw_gid)
             def demote():
                 os.setgroups([])
-                os.setgid(65534)
-                os.setuid(65534)
+                os.setgid(local_user.pw_gid)
+                os.setuid(local_user.pw_uid)
             cls.demote = demote
         cls.data = cls.folder / 'data'
         cls.running = False
