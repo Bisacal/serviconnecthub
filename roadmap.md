@@ -5,6 +5,8 @@
 - [x] Review all authenticated write permissions and add missing status guards without widening access
 - [x] Execute approved dedicated-account tests; restore status and verify fixture cleanup
 - [x] Run regression checks and linter; report live results and untested operations
+- [ ] Approve the exact two-function repair for request transitions and provider badge/rating protection; no database changes before approval
+- [ ] Apply only the approved repair, verify installed definitions/unchanged permissions, and report isolated execution tests separately from unperformed production workflow tests
 - [ ] Full client request/booking creation and new-client review tests: blocked on a separate test backend; current preview shares production, has no development environment, and has zero published providers. Do not publish synthetic providers into production.
 - [ ] Approve reversible client-testing plan; create authorized dedicated non-admin client/provider sessions and track exact disposable fixture IDs in the isolated environment
 - [ ] Verify creation, participant access, unrelated-user denial, review eligibility/duplicates, retained-session client status guards, restoration, and exact-ID cleanup; report live results separately from inspection

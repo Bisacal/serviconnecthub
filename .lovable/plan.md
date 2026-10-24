@@ -1,65 +1,183 @@
-# Remaining client workflow verification
+# Two narrowly scoped production safeguard repairs
 
-## Current prerequisite blocker
+## Approval boundary
 
-Read-only checks confirm that this preview connects to the production backend, with no separate development backend available and zero published providers. Request and booking creation require a published provider. Publishing a synthetic test provider here would expose fictional data to public visitors, contrary to the launch requirements. A code draft alone is not evidence of backend isolation.
+This plan proposes one new migration replacing exactly two installed private trigger functions. It does not apply any database changes now. Approval covers only the SQL below and non-production automated verification; it does not authorize accounts, real-record writes, production forged-write tests, frontend publication, authentication changes, payment changes, or unrelated repairs.
 
-No accounts have been created, no records or account statuses changed, and no workflow has been reported as passing.
+The earlier isolated-client workflow plan remains a separate outstanding task. These repairs alone will not establish that the production pilot is ready.
 
-## Required setup
+## Confirmed root causes — current production definition inspection
 
-- Provide a separate test backend/environment with the current schema and account-status guards, without real customer or provider data. Confirm its separation before any writes. This is a prerequisite, not an approval to modify or replace the existing production connection.
-- Create dedicated non-admin client, provider, and unrelated-client identities there. Use the supported test-account approval flow when available. A pre-confirmed passwordless test session is not a registration or password-login test.
-- Test ordinary registration and login only with a controlled email inbox and confirmation access; otherwise mark those steps NOT TESTED rather than weakening confirmation settings.
+### 1. Service requests
 
-## Reversible test scope
+- The enabled `guard_request_update` BEFORE UPDATE trigger on `public.service_requests` calls `private.guard_request_update()`.
+- That function is owned by `postgres`, is `SECURITY DEFINER`, and begins with `IF current_user NOT IN ('authenticated','anon') THEN RETURN NEW; END IF;`.
+- Inside this function `current_user` is the function owner, not the signed-in client/provider role. The early return therefore bypasses the intended checks.
+- Its older body also allows broader transitions and omits the closed-request and accepted-request editing restrictions.
+- The stronger `public.guard_request_update()` exists but is not attached to the installed trigger. Merely editing that public function would not repair the actual execution path.
 
-1. Verify dedicated identities are active and lack administrator privileges; record exact fixture IDs and original statuses.
-2. Create an explicitly labelled disposable provider, publish it only inside the isolated backend, add an active scheduled service and future availability.
-3. Submit a service request through the client UI. Read the stored request through both client and provider UI/session paths; verify an unrelated client and anonymous visitor cannot read or modify it.
-4. Submit a booking through the client UI. Verify participant access, unrelated-user read/update/delete denial, forged client IDs, invalid slots, and duplicate/conflicting booking rejection with read-back evidence.
-5. Complete the actual test request using the provider's permitted pending → accepted → in_progress → completed transitions. Submit a new client's first review through the UI, then verify persisted rating/review ownership, duplicate rejection, incomplete-request rejection, and unrelated-client rejection. Reviews currently depend on completed service requests, not completed bookings alone.
-6. Under this approved plan, change ONLY the newly created dedicated client from active to suspended to deactivated while retaining its token. Attempt request/booking/review insertion and representative own-record updates and deletions. Read back records to distinguish denial from a successful response affecting zero rows. Restore its original active status in a finally step. Do not change the existing dedicated provider or any real account's status.
-7. Remove only exact tracked disposable records and generated notifications. Remove test files if any are created. Verify absence through privileged read-only queries and report any test auth identities that cannot safely be removed through supported account-management tools.
+### 2. Provider badges and ratings
 
-## Current results
+- The enabled `protect_provider_fields` BEFORE INSERT OR UPDATE trigger on `public.provider_profiles` calls `private.protect_provider_fields()`.
+- That function is also owned by `postgres` and `SECURITY DEFINER`, but its protection runs only when `current_user IN ('authenticated','anon')` and the actor is not an administrator.
+- Its definer execution context prevents that branch from running for ordinary provider writes.
+- The protected values are `is_verified`, `rating_average`, and `review_count`. `average_rating` is a stored generated column derived from `rating_average`, not a separately writable total.
 
-| Check | Result | Evidence and limitation |
+These are verified definition/trigger defects, not performed exploits. No request, provider profile, badge, or rating was changed during inspection.
+
+## Existing authorization and execution privileges
+
+- Request UPDATE policies allow the owning client or owning provider; administrators have a read policy, not a separate request-update grant through RLS. Restrictive active-account checks remain in place.
+- Provider INSERT/UPDATE policies permit the owner; an existing administrator policy permits management. Restrictive active-account checks remain in place.
+- Authenticated users have column UPDATE privileges for the affected values. Therefore the trigger protections must work; the UI is not an authorization boundary.
+- Both affected private functions currently have default PUBLIC EXECUTE privileges. This proposal changes no grants or ACLs. They return `trigger` and cannot be used as ordinary standalone SQL functions. No new public endpoint is added.
+- Authenticated callers have USAGE on `private` and EXECUTE on the existing `private.has_role` helper. Its privileged role lookup is unchanged.
+- The separate enabled verification-status guard uses `auth.uid()` and the protected role helper, not the faulty executing-role check. It is untouched.
+- The separate enabled `private.refresh_provider_rating()` runs as `postgres` with definer rights and recomputes totals after review INSERT/UPDATE/DELETE. It is untouched.
+- Review insertion already requires an owned, completed matching request and one review per request. Both rules are untouched.
+
+## Proposed changes
+
+1. Replace the body of the **installed private request function** with the intended stricter logic, and change it to `SECURITY INVOKER`.
+2. Change the **installed provider-field function** to `SECURITY INVOKER`, preserving its existing protected fields and administrator exception.
+3. Keep the existing enabled triggers attached to those same functions. No trigger replacement is necessary: replacing their definitions in place repairs the actual installed call path.
+4. Preserve function ownership, signatures, ACLs, existing search paths, RLS policies, table grants, review helpers, verification-status guard, and rating-refresh function.
+
+### Exact proposed migration SQL — not applied
+
+```sql
+CREATE OR REPLACE FUNCTION private.guard_request_update()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path TO public, private
+AS $function$
+DECLARE
+  is_client BOOLEAN := auth.uid() = OLD.client_id;
+BEGIN
+  IF current_user NOT IN ('authenticated', 'anon') THEN
+    RETURN NEW;
+  END IF;
+
+  NEW.id := OLD.id;
+  NEW.client_id := OLD.client_id;
+  NEW.provider_id := OLD.provider_id;
+  NEW.created_at := OLD.created_at;
+
+  IF OLD.status IN ('declined', 'completed', 'cancelled') THEN
+    RAISE EXCEPTION 'This request is closed';
+  END IF;
+
+  IF NEW.status IS DISTINCT FROM OLD.status THEN
+    IF is_client THEN
+      IF NEW.status <> 'cancelled'
+         OR OLD.status NOT IN ('pending', 'accepted') THEN
+        RAISE EXCEPTION 'Clients can only cancel pending or accepted requests';
+      END IF;
+    ELSE
+      IF NOT (
+        (OLD.status = 'pending' AND NEW.status IN ('accepted', 'declined'))
+        OR (OLD.status = 'accepted' AND NEW.status = 'in_progress')
+        OR (OLD.status = 'in_progress' AND NEW.status = 'completed')
+      ) THEN
+        RAISE EXCEPTION 'Invalid status change';
+      END IF;
+    END IF;
+  END IF;
+
+  IF NOT is_client OR OLD.status <> 'pending' THEN
+    NEW.title := OLD.title;
+    NEW.details := OLD.details;
+    NEW.location := OLD.location;
+    NEW.preferred_date := OLD.preferred_date;
+    NEW.preferred_time := OLD.preferred_time;
+    NEW.budget := OLD.budget;
+    NEW.service_id := OLD.service_id;
+  END IF;
+
+  RETURN NEW;
+END;
+$function$;
+
+CREATE OR REPLACE FUNCTION private.protect_provider_fields()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path TO public, private
+AS $function$
+BEGIN
+  IF current_user IN ('authenticated', 'anon')
+     AND NOT private.has_role(auth.uid(), 'admin'::public.app_role) THEN
+    IF TG_OP = 'INSERT' THEN
+      NEW.is_verified := false;
+      NEW.rating_average := 0;
+      NEW.review_count := 0;
+    ELSE
+      NEW.is_verified := OLD.is_verified;
+      NEW.rating_average := OLD.rating_average;
+      NEW.review_count := OLD.review_count;
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$function$;
+```
+
+The explicit request-ID preservation prevents participants from changing the identity of the request. The other request restrictions mirror the intended stronger public definition; that unattached public function is not changed.
+
+## Why this resolves the execution-context problem
+
+An invoker trigger executes in the context of the statement that invoked it, rather than switching to its own owner. Ordinary authenticated client/provider writes therefore enter the protection branches. Returning corrected `NEW` values requires no privileged table update inside either function.
+
+Privileged database/server operations retain their existing behavior; this is not a new permission grant. In particular, the nested provider UPDATE issued by the existing definer rating-refresh function still runs in its trusted owner context. The invoker provider-field guard therefore does not overwrite legitimately recalculated rating totals.
+
+Keeping the provider guard as definer and merely switching it to `auth.uid()` would risk suppressing legitimate nested rating recalculation initiated by a non-admin reviewer. Invoker execution preserves the distinction between a direct provider write and the existing privileged recalculation path without adding a trigger-depth bypass.
+
+## Legitimate operations preserved
+
+| Actor/action | Intended result after repair |
+| --- | --- |
+| Client edits its pending request | Allowed under existing ownership RLS; identity remains unchanged |
+| Client cancels pending or accepted request | Allowed |
+| Client marks its own request completed | Rejected; cannot manufacture completion to qualify for a review |
+| Provider accepts or declines pending request | Allowed |
+| Provider moves accepted → in_progress → completed | Allowed in order |
+| Provider skips stages or changes client request details | Invalid transition rejected; client-controlled details preserved |
+| Participant edits a declined/completed/cancelled request | Rejected |
+| Provider edits ordinary profile/publication fields | Allowed under unchanged RLS and verification-status guard |
+| Provider submits protected badge/rating values | Existing protected values retained; inserts initialized to false/zero |
+| Active administrator approves/rejects verification | Existing role exception allows badge changes; separate status guard still applies |
+| Review insertion/edit/deletion or moderation refreshes ratings | Existing privileged recalculation path remains effective |
+| Unrelated user or inactive actor writes | Existing ownership/status RLS still controls access; no new grant |
+
+This protects completion from client manipulation; it does not prove a service actually occurred or prevent a legitimate provider from dishonestly declaring completion through permitted stages. No repair to factual service verification is proposed.
+
+## Verification plan and honest result labels
+
+### Already performed — read-only
+
+| Check | Result | Evidence type |
 | --- | --- | --- |
-| Identify request prerequisites | Inspection only | Live policy read confirms published provider, authenticated client ownership, pending initial status, matching active service when selected. |
-| Identify booking prerequisites | Inspection only | Live function/policy read confirms publication, availability, date and conflict checks. |
-| Identify review prerequisites | Inspection only | Code and policies require a completed owned service request and enforce one review per request. A completed booking alone is not sufficient. |
-| Confirm isolated test environment | FAIL — prerequisite unavailable | Hosted backend metadata reports production only, no development environment. |
-| Confirm eligible provider fixture | NOT TESTED | No fixture created. Live read found zero published providers. |
-| Dedicated client identity/no administrator privileges | NOT TESTED | No new identity created before establishing safe isolation. |
-| Client registration and password login | NOT TESTED | Requires dedicated identity and controlled confirmation access; no settings changed. |
-| Client-origin request creation and participant read-back | NOT TESTED | Blocked on isolated published-provider fixture and authorized sessions. |
-| Client-origin booking creation and participant read-back | NOT TESTED | Same blocker. |
-| Unauthorized request/booking access or modification | NOT TESTED | Policies inspected; no new client-session probe performed. |
-| New-client review submission | NOT TESTED | Requires a genuine test request completed via permitted provider transitions. |
-| Unauthorized, premature and duplicate review rejection | NOT TESTED | Eligibility and uniqueness inspected, but not exercised with a new client. |
-| Client suspended/deactivated retained-session writes | NOT TESTED | Requires dedicated client and approval of this reversible plan. No status changes performed. |
-| Cleanup | No cleanup necessary this turn | No test account, fixture, notification or file was created. Nothing was changed in production. |
+| Exact installed function bodies, owner and security modes | VERIFIED; both defects confirmed | Live database definition inspection |
+| Enabled trigger attachments | VERIFIED | Live database definition inspection |
+| Relevant RLS, role-helper execution, schema usage and column privileges | VERIFIED | Live policy/privilege inspection |
+| Generated rating alias and nested rating-refresh path | VERIFIED by inspection | Live definitions and source inspection |
+| UI status transitions and admin verification updates | VERIFIED by inspection | Code inspection |
+| Repaired behavior | NOT TESTED | No repairs applied |
+| New client/provider end-to-end workflows | NOT TESTED | No accounts or production writes |
 
-**Problems discovered:** the required test environment is unavailable; no application defect has been established by live workflow testing in this turn.
+### After approval
 
-**Fixes made:** none to application code, database schema, permissions, authentication settings or payments. Only the verification plan and task checklist were updated.
+1. Re-read definitions and relevant permissions immediately before applying; stop and ask if they differ materially from this inspected baseline. Apply only the two replacements above as one new migration, never replay old migrations.
+2. Add focused regression tests next to existing security tests for allowed transitions, client completion rejection, immutable fields, closed-request rejection, provider badge/rating preservation, administrator verification, and nested rating recalculation.
+3. Exercise the **actual SQL** against a disposable local PostgreSQL database, if available, with synthetic roles/data that have no production connection. Verify permitted and rejected transitions and the nested definer → invoker rating update. Report this as isolated database execution, not production UI testing. Static SQL checks alone are not proof of behavior; if this isolated harness cannot be supplied, report behavioral verification NOT TESTED.
+4. Read back both installed definitions and security modes, unchanged trigger bindings/enabled state, owners, ACLs, RLS, generated alias, verification guard, review eligibility and rating-refresh definitions. Verify the new migration journal entry and run the existing offline security regression suite and read-only linter.
+5. Do not test by modifying genuine production users or creating accounts/fixtures there. Production client creation, participant read-back, actual review submission, retained-session status writes, and live admin approval remain NOT TESTED under this approval scope.
+6. Report changes, static results, isolated execution results, production definition checks, limitations and any additional findings separately. No cleanup of production records is needed because none will be created or changed.
 
-**Outstanding:** every client workflow/live access test listed above, plus registration/confirmation/password login and optional client account-status checks. Existing-provider/personal-profile deletion remains outside this test scope.
+## Additional issues and limits
 
-## Deliverable after prerequisites are available
+The private request function lacks stronger rules independently of the execution-context bug; the proposed replacement addresses that within the requested scope. The generated rating alias is already protected by database generation. No unrelated repair is proposed. Current production data is not retrospectively corrected or audited for past manipulation by this migration.
 
-A results table with PASS, FAIL, or NOT TESTED for every executed or outstanding check; evidence classified as live UI/backend testing, policy/code inspection, or not tested; problems and any narrowly scoped fixes; status restoration and cleanup counts.
-
-No redesign, production fixture publication, payment configuration, production customer/provider edits, or permission changes. If an unexpected failure requires a schema or permission correction, report it before making significant changes.
-
-## Technical evidence already inspected
-
-- Backend metadata: production only, development environment absent.
-- Database: zero published provider rows.
-- Request/booking INSERT RLS: authenticated client ownership, pending status, published provider, and no self-provider interaction.
-- Booking validation: active matching service, future/current date, configured availability, duplicate and confirmed-slot conflict checks.
-- Review eligibility: completed owned matching service request; one review per request; provider read-only access.
-- Account status: restrictive write policies require `private.account_is_active()`.
-
-These are inspection findings, not live workflow PASS results.
+Approval does not authorize a production pilot. A fresh readiness decision must consider the results and remaining untested workflows.
