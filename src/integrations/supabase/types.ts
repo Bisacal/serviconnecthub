@@ -1414,6 +1414,14 @@ export type Database = {
           unread: number
         }[]
       }
+      participant_provider_names: {
+        Args: { _provider_ids: string[] }
+        Returns: {
+          business_name: string
+          id: string
+          public_name: string
+        }[]
+      }
       provider_current_plan: { Args: { _provider_id: string }; Returns: string }
       provider_visibility: {
         Args: never
