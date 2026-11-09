@@ -155,6 +155,13 @@
       "when": 1794238020603,
       "tag": "0021_provider_privacy_step1",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1794238390118,
+      "tag": "0022_public_providers_revoke_writes",
+      "breakpoints": true
     }
   ]
 }
