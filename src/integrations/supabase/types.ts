@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.17"
-  }
   public: {
     Tables: {
       bookings: {
@@ -1124,6 +1119,51 @@ export type Database = {
           },
         ]
       }
+      subscription_admin_audit: {
+        Row: {
+          admin_user_id: string
+          created_at: string
+          id: string
+          new_values: Json | null
+          operation: string
+          previous_values: Json | null
+          provider_id: string
+          reason: string
+          request_fingerprint: string
+          request_id: string
+          result: Json
+          subscription_id: string | null
+        }
+        Insert: {
+          admin_user_id: string
+          created_at?: string
+          id?: string
+          new_values?: Json | null
+          operation: string
+          previous_values?: Json | null
+          provider_id: string
+          reason: string
+          request_fingerprint: string
+          request_id: string
+          result: Json
+          subscription_id?: string | null
+        }
+        Update: {
+          admin_user_id?: string
+          created_at?: string
+          id?: string
+          new_values?: Json | null
+          operation?: string
+          previous_values?: Json | null
+          provider_id?: string
+          reason?: string
+          request_fingerprint?: string
+          request_id?: string
+          result?: Json
+          subscription_id?: string | null
+        }
+        Relationships: []
+      }
       subscription_plans: {
         Row: {
           billing_enabled: boolean
@@ -1385,6 +1425,19 @@ export type Database = {
       }
     }
     Functions: {
+      admin_subscription_operation: {
+        Args: {
+          _expected_updated_at?: string
+          _operation: string
+          _period_end?: string
+          _plan_id?: string
+          _provider_id: string
+          _reason: string
+          _request_id: string
+          _subscription_id?: string
+        }
+        Returns: Json
+      }
       get_provider_busy_slots: {
         Args: { _date: string; _provider_id: string }
         Returns: {
@@ -1635,3 +1688,4 @@ export const Constants = {
     },
   },
 } as const
+

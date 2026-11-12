@@ -169,6 +169,13 @@
       "when": 1794495242280,
       "tag": "0023_subscription_status_add_suspended",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1794497359698,
+      "tag": "0024_subscription_admin_operation_and_audit",
+      "breakpoints": true
     }
   ]
 }
