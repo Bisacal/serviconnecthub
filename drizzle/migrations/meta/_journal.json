@@ -176,6 +176,13 @@
       "when": 1794497359698,
       "tag": "0024_subscription_admin_operation_and_audit",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1795018716600,
+      "tag": "0025_subscription_audit_tighten_privileges",
+      "breakpoints": true
     }
   ]
 }
